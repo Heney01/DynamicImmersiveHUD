@@ -12,14 +12,6 @@ local originalToggleAllBags = nil
 local originalToggleBackpack = nil
 local merchantActive = false
 local merchantFrame = nil
-local debugMode = false -- Variable to enable/disable debug
-
--- Conditional debug function
-local function DebugPrint(message)
-    if debugMode then
-        print("|cFFFFAA00HideUI Debug:|r " .. message)
-    end
-end
 
 -- ============================================================================
 -- MAIN FUNCTIONS
@@ -55,8 +47,7 @@ function HideUI.Bags.ShowTemporary()
         
         -- Hide bag elements
         HideUI.Bags.HideAfterDelay()
-        
-        print("|cFF87CEEB HideUI:|r Bags closed and hidden")
+    
         return
     end
     
@@ -111,9 +102,7 @@ function HideUI.Bags.ShowTemporary()
             end
         end
     end)
-    
-    print("|cFF87CEEB HideUI:|r Bags shown temporarily")
-    
+        
     -- Schedule automatic hiding in 8 seconds (reduced because instant hiding)
     bagTimer = C_Timer.NewTimer(8, function()
         HideUI.Bags.HideAfterDelay()
@@ -122,32 +111,22 @@ end
 
 -- Hide bags after delay
 function HideUI.Bags.HideAfterDelay()
-    DebugPrint("HideAfterDelay called")
-    DebugPrint("- bagsHidden: " .. (HideUI.State.bagsHidden and "true" or "false"))
-    DebugPrint("- merchantActive: " .. (merchantActive and "true" or "false"))
-    DebugPrint("- combatOverrideActive: " .. (HideUI.State.combatOverrideActive and "true" or "false"))
-    
     if not HideUI.State.bagsHidden then 
-        DebugPrint("Stop: bags not supposed to be hidden")
         return
     end
     
     -- Don't hide if at merchant
     if merchantActive then
-        print("|cFF87CEEB HideUI:|r Bag hiding canceled (merchant active)")
         return
     end
     
     -- Don't hide in combat
     if HideUI.State.combatOverrideActive then
-        DebugPrint("Bag hiding canceled (combat active)")
         return
     end
     
     -- Disable temporary mode
     bagTemporaryActive = false
-    
-    DebugPrint("Instant hiding procedure")
     
     -- Instant hiding (no fade)
     for _, elementName in pairs(HideUI.Config.bagElements) do
@@ -168,8 +147,6 @@ function HideUI.Bags.HideAfterDelay()
             containerFrame:EnableMouse(false)
         end
     end
-    
-    print("|cFF87CEEB HideUI:|r Bags hidden instantly")
 end
 
 -- Apply bag toggle
@@ -320,19 +297,13 @@ function HideUI.Bags.SetupHooks()
         merchantFrame:RegisterEvent("MERCHANT_SHOW")
         merchantFrame:RegisterEvent("MERCHANT_CLOSED")
         
-        merchantFrame:SetScript("OnEvent", function(self, event, ...)
-            DebugPrint("Merchant event received: " .. event)
-            
+        merchantFrame:SetScript("OnEvent", function(self, event, ...)            
             if event == "MERCHANT_SHOW" then
-                DebugPrint("Merchant opened")
                 HideUI.Bags.ShowForMerchant()
             elseif event == "MERCHANT_CLOSED" then
-                DebugPrint("Merchant closed")
                 HideUI.Bags.HideAfterMerchant()
             end
         end)
-        
-        print("|cFF00FF00HideUI:|r Merchant event handler created")
     end
 end
 
@@ -362,7 +333,6 @@ function HideUI.Bags.ForceHide()
     
     -- Don't hide if at merchant
     if merchantActive then
-        print("|cFF87CEEB HideUI:|r Bags kept visible (merchant)")
         return
     end
     
@@ -391,73 +361,24 @@ function HideUI.Bags.ForceHide()
 end
 
 -- ============================================================================
--- BAG DEBUG FUNCTIONS
--- ============================================================================
-
--- Debug function to test bag opening
-function HideUI.Bags.DebugBagOpening()
-    print("|cFF00FF00HideUI Bags Debug:|r")
-    print("  Bags hidden state: " .. (HideUI.State.bagsHidden and "YES" or "NO"))
-    print("  Temporary display active: " .. (bagTemporaryActive and "YES" or "NO"))
-    print("  Merchant active: " .. (merchantActive and "YES" or "NO"))
-    print("  Combat override active: " .. (HideUI.State.combatOverrideActive and "YES" or "NO"))
-    print("  Timer active: " .. (bagTimer and "YES" or "NO"))
-    
-    -- Test available functions
-    print("  ToggleAllBags available: " .. (ToggleAllBags and "YES" or "NO"))
-    print("  ToggleBackpack available: " .. (ToggleBackpack and "YES" or "NO"))
-    print("  originalToggleAllBags saved: " .. (originalToggleAllBags and "YES" or "NO"))
-    
-    -- Check merchant state in game
-    local merchantShown = MerchantFrame and MerchantFrame:IsShown()
-    print("  MerchantFrame shown: " .. (merchantShown and "YES" or "NO"))
-    
-    -- Check bag button
-    local backpackButton = _G["MainMenuBarBackpackButton"]
-    if backpackButton then
-        print("  Backpack button found: YES")
-        print("  Button visible: " .. (backpackButton:IsVisible() and "YES" or "NO"))
-        print("  Button enabled: " .. (backpackButton:IsEnabled() and "YES" or "NO"))
-        print("  Button alpha: " .. backpackButton:GetAlpha())
-    else
-        print("  Backpack button found: NO")
-    end
-    
-    -- Check bag state
-    local numBagsOpen = 0
-    for i = 1, 13 do
-        local containerFrame = _G["ContainerFrame"..i]
-        if containerFrame and containerFrame:IsShown() then
-            numBagsOpen = numBagsOpen + 1
-            print("  ContainerFrame" .. i .. " open (alpha: " .. containerFrame:GetAlpha() .. ")")
-        end
-    end
-    print("  Number of bags open: " .. numBagsOpen)
-end
-
--- ============================================================================
 -- MERCHANT MANAGEMENT
 -- ============================================================================
 
 -- Show bags when talking to merchant
 function HideUI.Bags.ShowForMerchant()
     if not HideUI.State.bagsHidden then return end
-    
-    DebugPrint("ShowForMerchant called")
-    
+        
     merchantActive = true
     
     -- Cancel ALL timers and modes in progress
     if bagTimer then
         bagTimer:Cancel()
         bagTimer = nil
-        DebugPrint("Bag timer canceled")
     end
     
     -- Force disable temporary mode
     if bagTemporaryActive then
         bagTemporaryActive = false
-        DebugPrint("Temporary mode disabled")
     end
     
     -- Show bag elements
@@ -481,22 +402,17 @@ function HideUI.Bags.ShowForMerchant()
             containerFrame:EnableMouse(true)
         end
     end
-    
-    DebugPrint(numBagsOpen .. " bags already open")
-    
+        
     -- If no bags are open, open them
     if numBagsOpen == 0 then
         C_Timer.After(0.1, function()
-            if not merchantActive then
-                DebugPrint("Merchant closed before opening bags")
+            if not merchantActive then     
                 return
             end
             
             if originalToggleAllBags then
-                DebugPrint("Opening with originalToggleAllBags")
                 originalToggleAllBags()
             elseif ToggleAllBags then
-                DebugPrint("Opening with ToggleAllBags")
                 local tempBagsHidden = HideUI.State.bagsHidden
                 local tempMerchantActive = merchantActive
                 HideUI.State.bagsHidden = false
@@ -510,7 +426,6 @@ function HideUI.Bags.ShowForMerchant()
         -- Ensure bags are visible after opening
         C_Timer.After(0.3, function()
             if not merchantActive then
-                DebugPrint("Merchant closed before final check")
                 return
             end
             
@@ -519,47 +434,29 @@ function HideUI.Bags.ShowForMerchant()
                 if containerFrame and containerFrame:IsShown() then
                     containerFrame:SetAlpha(1)
                     containerFrame:EnableMouse(true)
-                    DebugPrint("ContainerFrame" .. i .. " forced visible")
                 end
             end
         end)
     end
     
-    print("|cFF87CEEB HideUI:|r Bags shown for merchant")
 end
 
 -- Hide bags when leaving merchant
 function HideUI.Bags.HideAfterMerchant()
     if not merchantActive then 
-        DebugPrint("HideAfterMerchant called but merchant already inactive")
         return 
     end
-    
-    DebugPrint("HideAfterMerchant called, disabling merchant mode")
+
     merchantActive = false
     
     -- If bags are supposed to be hidden, hide them instantly
     if HideUI.State.bagsHidden then
-        DebugPrint("Hiding bags because bagsHidden = true")
         HideUI.Bags.HideAfterDelay()
     else
-        DebugPrint("No hiding because bagsHidden = false")
     end
-    
-    print("|cFF87CEEB HideUI:|r Merchant closed, bags hidden instantly")
 end
 
 -- Check if currently at merchant
 function HideUI.Bags.IsMerchantActive()
     return merchantActive
-end
-
--- Enable/disable debug mode for bags
-function HideUI.Bags.SetDebugMode(enabled)
-    debugMode = enabled
-    if enabled then
-        print("|cFF00FF00HideUI:|r Bag debug enabled")
-    else
-        print("|cFF00FF00HideUI:|r Bag debug disabled")
-    end
 end

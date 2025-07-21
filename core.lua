@@ -37,7 +37,6 @@ function HideUI.Core.SaveOriginalAlphas()
     
     -- Check that configuration is loaded
     if not config then
-        print("|cFFFF0000HideUI:|r Configuration not loaded, postponing alpha save")
         return
     end
     
@@ -88,7 +87,6 @@ function HideUI.Core.ToggleElementList(elementList, isHidden, elementType)
     
     -- Check that element list exists
     if not elementList then
-        print("|cFFFF0000HideUI:|r Element list not found for " .. (elementType or "unknown"))
         return
     end
     
@@ -119,9 +117,6 @@ function HideUI.Core.ToggleActionBars()
     if not HideUI.State.combatOverrideActive and HideUI.Config and HideUI.Config.actionBars then
         HideUI.Core.ToggleElementList(HideUI.Config.actionBars, HideUI.State.barsHidden, "bars")
     end
-    
-    local status = HideUI.State.barsHidden and "hidden" or "shown"
-    print("|cFF00FF00HideUI:|r Action bars " .. status)
 end
 
 -- Toggle chat
@@ -132,9 +127,6 @@ function HideUI.Core.ToggleChat()
     if HideUI.Chat then
         HideUI.Chat.ApplyToggle(HideUI.State.chatHidden)
     end
-    
-    local status = HideUI.State.chatHidden and "hidden" or "shown"
-    print("|cFF00FF00HideUI:|r Chat " .. status)
 end
 
 -- Toggle interface elements
@@ -145,9 +137,6 @@ function HideUI.Core.ToggleUIElements()
     if not HideUI.State.combatOverrideActive and HideUI.Config and HideUI.Config.uiElements then
         HideUI.Core.ToggleElementList(HideUI.Config.uiElements, HideUI.State.uiHidden, "ui")
     end
-    
-    local status = HideUI.State.uiHidden and "hidden" or "shown"
-    print("|cFF00FF00HideUI:|r Interface elements " .. status)
 end
 
 -- Toggle bags
@@ -159,9 +148,7 @@ function HideUI.Core.ToggleBags()
     if HideUI.Bags then
         HideUI.Bags.ApplyToggle(HideUI.State.bagsHidden)
     end
-    
-    local status = HideUI.State.bagsHidden and "hidden" or "shown"
-    print("|cFF00FF00HideUI:|r Bags " .. status)
+
 end
 
 -- Toggle micro-menus
@@ -172,9 +159,6 @@ function HideUI.Core.ToggleMicroMenu()
     if not HideUI.State.combatOverrideActive and HideUI.Config and HideUI.Config.microMenuElements then
         HideUI.Core.ToggleElementList(HideUI.Config.microMenuElements, HideUI.State.microMenuHidden, "microMenu")
     end
-    
-    local status = HideUI.State.microMenuHidden and "hidden" or "shown"
-    print("|cFF00FF00HideUI:|r Micro-menus " .. status)
 end
 
 -- Toggle everything
@@ -193,7 +177,6 @@ function HideUI.Core.ToggleAll()
             if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
                 HideUI.Core.ToggleElementList(HideUI.Config.sideActionBars, false, "sideBars")
             end
-            print("|cFF00FF00HideUI:|r Side bars shown")
         end
     else
         -- If everything is shown, hide everything
@@ -206,7 +189,6 @@ function HideUI.Core.ToggleAll()
         if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
             HideUI.Core.ToggleElementList(HideUI.Config.sideActionBars, true, "sideBars")
         end
-        print("|cFF00FF00HideUI:|r Side bars hidden")
     end
 end
 
@@ -219,7 +201,6 @@ function HideUI.Core.ShowAll()
     if state.uiHidden then HideUI.Core.ToggleUIElements() end
     if state.bagsHidden then HideUI.Core.ToggleBags() end
     if state.microMenuHidden then HideUI.Core.ToggleMicroMenu() end
-    print("|cFF00FF00HideUI:|r Interface restored")
 end
 
 -- ============================================================================
@@ -231,17 +212,7 @@ frame:RegisterEvent("PLAYER_REGEN_DISABLED") -- Enter combat
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- Leave combat
 
 frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "ADDON_LOADED" then
-        local loadedAddon = ...
-        if loadedAddon == addonName then
-            print("|cFF00FF00Dynamic Immersive HUD|r v2.0 loaded successfully!")
-            print("Use |cFFFFFF00/hideui|r or the |cFFFFFF00<|r key to toggle interface")
-            print("Use the |cFFFFFF00B|r key to show bags temporarily")
-            print("|cFF32CD32Automatic combat:|r Interface shows in combat and disappears after")
-            print("|cFF87CEEBTemporary chat:|r Chat shows for important messages")
-            print("|cFFFFB6C1Smart hover:|r Chat, bars, bags, micro-menus and quests show on hover")
-        end
-    elseif event == "PLAYER_LOGIN" then
+    if event == "PLAYER_LOGIN" then
         -- Wait for all modules to load before saving alphas
         C_Timer.After(1, function()
             HideUI.Core.SaveOriginalAlphas()

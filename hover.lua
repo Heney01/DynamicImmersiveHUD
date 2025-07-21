@@ -228,7 +228,6 @@ function HideUI.Hover.Initialize()
             if isInZone then
                 if not hoverActiveElements[zoneData.elements] then
                     HideUI.Hover.ShowElementsOnHover(zoneData.elements)
-                    print("|cFFFFB6C1HideUI:|r " .. zoneData.elements .. " shown on hover")
                 end
                 -- Cancel hide timer if still hovering
                 if hoverTimers[zoneData.elements] then

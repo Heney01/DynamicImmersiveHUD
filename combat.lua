@@ -15,7 +15,6 @@ local fadeTimer = nil
 function HideUI.Combat.ApplyFadeToAllElements(alpha)
     -- Check that configuration is available
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, unable to apply fade")
         return
     end
     
@@ -127,7 +126,6 @@ function HideUI.Combat.ShowUIForCombat()
     
     -- Check that configuration is available before reactivating interactions
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, mouse interactions not restored")
         return
     end
     
@@ -199,7 +197,6 @@ end
 function HideUI.Combat.FadeOutUI()
     -- Check that configuration is loaded
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, fade canceled")
         return
     end
     
@@ -251,14 +248,12 @@ function HideUI.Combat.OnEnterCombat()
     
     if state.barsHidden or state.chatHidden or state.uiHidden or state.bagsHidden then
         HideUI.Combat.ShowUIForCombat()
-        print("|cFFFF6600HideUI:|r Interface shown for combat")
     end
 end
 
 -- Leave combat handler
 function HideUI.Combat.OnLeaveCombat()
     if HideUI.State.combatOverrideActive then
-        print("|cFF32CD32HideUI:|r Combat ended - fading in 1 second...")
         HideUI.Combat.FadeOutUI()
     end
 end

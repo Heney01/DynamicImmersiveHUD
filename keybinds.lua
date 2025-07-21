@@ -42,7 +42,6 @@ function HideUI.Keybinds.Setup()
     if success then
         -- Assign '<' key
         SetBinding("<", "MACRO " .. macroName)
-        print("|cFF00FF00HideUI:|r '<' key configured to toggle interface")
     end
     
     -- Create macro for bags
@@ -58,7 +57,6 @@ function HideUI.Keybinds.Setup()
     if bagSuccess then
         -- Assign 'B' key for bags
         SetBinding("B", "MACRO " .. bagMacroName)
-        print("|cFF00FF00HideUI:|r 'B' key configured to show bags temporarily")
     end
     
     -- Save shortcuts
@@ -80,7 +78,6 @@ function HideUI.Keybinds.SetupAlternative()
     SetBinding("B", "HIDEUI_TOGGLE_BAGS")
     
     SaveBindings(GetCurrentBindingSet())
-    print("|cFF00FF00HideUI:|r Shortcuts configured in alternative mode")
 end
 
 -- Check and repair shortcuts if needed
@@ -89,12 +86,10 @@ function HideUI.Keybinds.CheckAndRepair()
     local binding2 = GetBinding("B")
     
     if not binding1 or not binding1:find("HideUI") then
-        print("|cFFFFAA00HideUI:|r '<' shortcut missing, reconfiguring...")
         HideUI.Keybinds.Setup()
     end
     
     if not binding2 or not binding2:find("HideUI") then
-        print("|cFFFFAA00HideUI:|r 'B' shortcut missing, reconfiguring...")
         HideUI.Keybinds.Setup()
     end
 end
@@ -103,30 +98,9 @@ end
 -- UTILITY FUNCTIONS
 -- ============================================================================
 
--- Display current shortcuts
-function HideUI.Keybinds.ShowCurrentBindings()
-    print("|cFF00FF00HideUI Current shortcuts:|r")
-    
-    local binding1 = GetBinding("<")
-    local binding2 = GetBinding("B")
-    
-    if binding1 then
-        print("  '<' key: " .. binding1)
-    else
-        print("  '<' key: |cFFFF0000Not configured|r")
-    end
-    
-    if binding2 then
-        print("  'B' key: " .. binding2)
-    else
-        print("  'B' key: |cFFFF0000Not configured|r")
-    end
-end
-
 -- Remove HideUI shortcuts
 function HideUI.Keybinds.RemoveBindings()
     if InCombatLockdown() then
-        print("|cFFFF0000HideUI:|r Cannot remove shortcuts while in combat")
         return
     end
     
@@ -145,7 +119,6 @@ function HideUI.Keybinds.RemoveBindings()
     end
     
     SaveBindings(GetCurrentBindingSet())
-    print("|cFF00FF00HideUI:|r Shortcuts removed")
 end
 
 -- ============================================================================
@@ -169,11 +142,6 @@ function HideUI.Keybinds.CheckConflicts()
     end
     
     if #conflicts > 0 then
-        print("|cFFFFAA00HideUI:|r Shortcut conflicts detected:")
-        for _, conflict in ipairs(conflicts) do
-            print("  '" .. conflict.key .. "' key used by: " .. conflict.current)
-        end
-        print("Use |cFFFFFF00/hideui bindings remove|r then |cFFFFFF00/hideui bindings setup|r to force configuration")
         return false
     end
     

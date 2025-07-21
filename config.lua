@@ -144,24 +144,6 @@ HideUI.Config.importantChatTypes = {
 }
 
 -- ============================================================================
--- DEBUG CONFIGURATION
--- ============================================================================
-
--- Elements to check in debug
-HideUI.Config.debugFrames = {
-    "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
-    "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
-    "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton",
-    "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton",
-    "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton",
-    "SocialsMicroButton", "WorldMapMicroButton", "BagBarFrame",
-    "MainMenuBarBackpackButton", "CharacterBag0Slot", "CharacterBag1Slot",
-    "CharacterBag2Slot", "CharacterBag3Slot", "CharacterBag4Slot",
-    "QuickJoinToastButton", "BagSlotButton", "MainMenuBarBagButtons",
-    "BagsBar", "ContainerFrameCombinedBags", "CombinedBagContainer"
-}
-
--- ============================================================================
 -- CONFIGURATION UTILITY FUNCTIONS
 -- ============================================================================
 
