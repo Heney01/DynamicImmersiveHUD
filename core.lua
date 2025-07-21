@@ -1,6 +1,5 @@
 -- Core.lua
 -- Main module for HideUI Elements
--- Manages initialization and coordination of modules
 
 local addonName, addon = ...
 
@@ -16,8 +15,6 @@ HideUI.State = {
     chatHidden = false,
     uiHidden = false,
     sideBarHidden = false,
-    bagsHidden = false,
-    microMenuHidden = false,
     inCombat = false,
     combatOverrideActive = false,
     originalAlphas = {}
@@ -53,26 +50,6 @@ function HideUI.Core.SaveOriginalAlphas()
     -- UI elements
     if config.uiElements then
         for _, elementName in pairs(config.uiElements) do
-            local element = _G[elementName]
-            if element and not state.originalAlphas[elementName] then
-                state.originalAlphas[elementName] = element:GetAlpha()
-            end
-        end
-    end
-    
-    -- Bag elements
-    if config.bagElements then
-        for _, elementName in pairs(config.bagElements) do
-            local element = _G[elementName]
-            if element and not state.originalAlphas[elementName] then
-                state.originalAlphas[elementName] = element:GetAlpha()
-            end
-        end
-    end
-    
-    -- Micro-menus
-    if config.microMenuElements then
-        for _, elementName in pairs(config.microMenuElements) do
             local element = _G[elementName]
             if element and not state.originalAlphas[elementName] then
                 state.originalAlphas[elementName] = element:GetAlpha()
@@ -139,39 +116,15 @@ function HideUI.Core.ToggleUIElements()
     end
 end
 
--- Toggle bags
-function HideUI.Core.ToggleBags()
-    HideUI.Core.SaveOriginalAlphas()
-    HideUI.State.bagsHidden = not HideUI.State.bagsHidden
-    
-    -- Delegate to Bags module
-    if HideUI.Bags then
-        HideUI.Bags.ApplyToggle(HideUI.State.bagsHidden)
-    end
-
-end
-
--- Toggle micro-menus
-function HideUI.Core.ToggleMicroMenu()
-    HideUI.Core.SaveOriginalAlphas()
-    HideUI.State.microMenuHidden = not HideUI.State.microMenuHidden
-    
-    if not HideUI.State.combatOverrideActive and HideUI.Config and HideUI.Config.microMenuElements then
-        HideUI.Core.ToggleElementList(HideUI.Config.microMenuElements, HideUI.State.microMenuHidden, "microMenu")
-    end
-end
-
--- Toggle everything
+-- Toggle everything 
 function HideUI.Core.ToggleAll()
     local state = HideUI.State
     
-    if state.barsHidden or state.chatHidden or state.uiHidden or state.sideBarHidden or state.bagsHidden or state.microMenuHidden then
+    if state.barsHidden or state.chatHidden or state.uiHidden or state.sideBarHidden then
         -- If something is hidden, show everything
         if state.barsHidden then HideUI.Core.ToggleActionBars() end
         if state.chatHidden then HideUI.Core.ToggleChat() end
         if state.uiHidden then HideUI.Core.ToggleUIElements() end
-        if state.bagsHidden then HideUI.Core.ToggleBags() end
-        if state.microMenuHidden then HideUI.Core.ToggleMicroMenu() end
         if state.sideBarHidden then 
             state.sideBarHidden = false
             if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
@@ -183,8 +136,6 @@ function HideUI.Core.ToggleAll()
         HideUI.Core.ToggleActionBars()
         HideUI.Core.ToggleChat()
         HideUI.Core.ToggleUIElements()
-        HideUI.Core.ToggleBags()
-        HideUI.Core.ToggleMicroMenu()
         state.sideBarHidden = true
         if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
             HideUI.Core.ToggleElementList(HideUI.Config.sideActionBars, true, "sideBars")
@@ -199,8 +150,6 @@ function HideUI.Core.ShowAll()
     if state.barsHidden then HideUI.Core.ToggleActionBars() end
     if state.chatHidden then HideUI.Core.ToggleChat() end
     if state.uiHidden then HideUI.Core.ToggleUIElements() end
-    if state.bagsHidden then HideUI.Core.ToggleBags() end
-    if state.microMenuHidden then HideUI.Core.ToggleMicroMenu() end
 end
 
 -- ============================================================================
@@ -224,9 +173,6 @@ frame:SetScript("OnEvent", function(self, event, ...)
         end)
         C_Timer.After(3, function()
             if HideUI.Chat then HideUI.Chat.SetupHooks() end
-        end)
-        C_Timer.After(4, function()
-            if HideUI.Bags then HideUI.Bags.SetupHooks() end
         end)
         C_Timer.After(5, function()
             if HideUI.Hover then HideUI.Hover.Initialize() end
@@ -252,14 +198,4 @@ end)
 function HideUI_ToggleAll() HideUI.Core.ToggleAll() end
 function HideUI_ToggleBars() HideUI.Core.ToggleActionBars() end
 function HideUI_ToggleChat() HideUI.Core.ToggleChat() end
-function HideUI_ToggleMicroMenu() HideUI.Core.ToggleMicroMenu() end
-function HideUI_ShowBagsTemporary() 
-    if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive then
-        HideUI.Bags.ShowTemporary()
-    elseif not HideUI.State.bagsHidden then
-        -- If bags are not hidden, normal behavior of B key
-        if ToggleAllBags then
-            ToggleAllBags()
-        end
-    end
-end
+function HideUI_ShowAll() HideUI.Core.ShowAll() end

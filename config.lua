@@ -30,7 +30,7 @@ for _, bar in pairs(HideUI.Config.sideActionBars) do
     table.insert(HideUI.Config.actionBars, bar)
 end
 
--- Main interface elements
+-- Main interface elements 
 HideUI.Config.uiElements = {
     -- Player and target frames
     "PlayerFrame", "TargetFrame",
@@ -45,27 +45,12 @@ HideUI.Config.uiElements = {
     "ActionBarUpButton", "ActionBarDownButton", "MainMenuBarPageNumber",
     -- Buffs and debuffs
     "BuffFrame", "DebuffFrame", "CastingBarFrame",
-    -- Micro menu and social buttons
-    "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
-    "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
-    "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton",
-    "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton",
-    "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton",
-    "SocialsMicroButton", "WorldMapMicroButton",
     -- Stances and shapeshifts
     "StanceBarLeft", "StanceBarMiddle", "StanceBarRight", "ShapeshiftBarFrame",
     "ShapeshiftButton1", "ShapeshiftButton2", "ShapeshiftButton3", "ShapeshiftButton4", "ShapeshiftButton5",
     "ShapeshiftButton6", "ShapeshiftButton7", "ShapeshiftButton8", "ShapeshiftButton9", "ShapeshiftButton10",
     -- Misc elements
     "KeyRingButton", "QuickJoinToastButton", "GameMenuFrame", "ChatFrameSocialTab"
-}
-
--- Bag elements to hide (separate from other UI elements)
-HideUI.Config.bagElements = {
-    "BagBarFrame", "MainMenuBarBackpackButton", "BackpackTokenFrame",
-    "CharacterBag0Slot", "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", "CharacterBag4Slot",
-    "BagsBar", "BagSlotButton", "MainMenuBarBagButtons",
-    "ContainerFrameCombinedBags", "CombinedBagContainer"
 }
 
 -- Chat elements to hide
@@ -76,21 +61,11 @@ HideUI.Config.chatElements = {
     "ChatFrame1ButtonFrameDownButton", "ChatFrame1ButtonFrameBottomButton", "ChatFrame1ButtonFrameMinimizeButton"
 }
 
--- Micro-menu elements
-HideUI.Config.microMenuElements = {
-    "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
-    "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
-    "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton",
-    "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton",
-    "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton",
-    "SocialsMicroButton", "WorldMapMicroButton"
-}
-
 -- ============================================================================
--- HOVER CONFIGURATION
+-- HOVER CONFIGURATION 
 -- ============================================================================
 
--- Hover zones for different elements
+-- Hover zones pour les éléments restants
 HideUI.Config.hoverZones = {
     chat = {
         region = {left = 0, right = 450, bottom = 0, top = 350},
@@ -111,16 +86,6 @@ HideUI.Config.hoverZones = {
         region = {left = 0, right = 0, bottom = 150, top = 0}, -- calculated dynamically
         elements = "objectives",
         delay = 3
-    },
-    bags = {
-        region = {left = 0, right = 0, bottom = 0, top = 100}, -- calculated dynamically
-        elements = "bags",
-        delay = 2
-    },
-    microMenu = {
-        region = {left = 0, right = 0, bottom = 0, top = 100}, -- calculated dynamically
-        elements = "microMenu",
-        delay = 2
     }
 }
 
@@ -164,13 +129,5 @@ function HideUI.Config.UpdateHoverZones()
     HideUI.Config.hoverZones.objectives.region.left = screenWidth - 400
     HideUI.Config.hoverZones.objectives.region.right = screenWidth - 150
     HideUI.Config.hoverZones.objectives.region.top = screenHeight - 100
-    
-    -- Bags zone
-    HideUI.Config.hoverZones.bags.region.left = screenWidth - 200
-    HideUI.Config.hoverZones.bags.region.right = screenWidth
-    
-    -- Micro-menu zone
-    HideUI.Config.hoverZones.microMenu.region.left = screenWidth - 250
-    HideUI.Config.hoverZones.microMenu.region.right = screenWidth
-    HideUI.Config.hoverZones.microMenu.region.top = 150
+
 end

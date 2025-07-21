@@ -9,7 +9,6 @@
 Config.lua
 Core.lua
 Chat.lua
-Bags.lua
 Combat.lua
 Hover.lua
 Commands.lua

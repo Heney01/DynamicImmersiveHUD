@@ -11,7 +11,7 @@ local fadeTimer = nil
 -- MAIN FUNCTIONS
 -- ============================================================================
 
--- Apply alpha level to all elements
+-- Apply alpha level to all elements 
 function HideUI.Combat.ApplyFadeToAllElements(alpha)
     -- Check that configuration is available
     if not HideUI.Config then
@@ -31,26 +31,6 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
     -- UI elements
     if HideUI.Config.uiElements then
         for _, elementName in pairs(HideUI.Config.uiElements) do
-            local element = _G[elementName]
-            if element then
-                element:SetAlpha(alpha)
-            end
-        end
-    end
-    
-    -- Bag elements
-    if HideUI.Config.bagElements then
-        for _, elementName in pairs(HideUI.Config.bagElements) do
-            local element = _G[elementName]
-            if element then
-                element:SetAlpha(alpha)
-            end
-        end
-    end
-    
-    -- Micro-menus
-    if HideUI.Config.microMenuElements then
-        for _, elementName in pairs(HideUI.Config.microMenuElements) do
             local element = _G[elementName]
             if element then
                 element:SetAlpha(alpha)
@@ -78,17 +58,9 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
             end
         end
     end
-    
-    -- Bag windows
-    for i = 1, 13 do
-        local containerFrame = _G["ContainerFrame"..i]
-        if containerFrame then
-            containerFrame:SetAlpha(alpha)
-        end
-    end
 end
 
--- Apply complete hidden state
+-- Apply complete hidden state 
 function HideUI.Combat.ApplyHiddenState()
     local state = HideUI.State
     
@@ -102,14 +74,6 @@ function HideUI.Combat.ApplyHiddenState()
     
     if state.uiHidden and HideUI.Core and HideUI.Config and HideUI.Config.uiElements then
         HideUI.Core.ToggleElementList(HideUI.Config.uiElements, true, "ui")
-    end
-    
-    if state.bagsHidden and HideUI.Bags then
-        HideUI.Bags.ApplyToggle(true)
-    end
-    
-    if state.microMenuHidden and HideUI.Core and HideUI.Config and HideUI.Config.microMenuElements then
-        HideUI.Core.ToggleElementList(HideUI.Config.microMenuElements, true, "microMenu")
     end
 end
 
@@ -148,25 +112,6 @@ function HideUI.Combat.ShowUIForCombat()
         end
     end
     
-    if HideUI.Config.bagElements then
-        for _, elementName in pairs(HideUI.Config.bagElements) do
-            local element = _G[elementName]
-            if element and element.EnableMouse then
-                element:EnableMouse(true)
-            end
-        end
-    end
-    
-    -- Reactivate micro-menus
-    if HideUI.Config.microMenuElements then
-        for _, elementName in pairs(HideUI.Config.microMenuElements) do
-            local element = _G[elementName]
-            if element and element.EnableMouse then
-                element:EnableMouse(true)
-            end
-        end
-    end
-    
     -- Reactivate chat
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame"..i]
@@ -181,14 +126,6 @@ function HideUI.Combat.ShowUIForCombat()
             if element and element.EnableMouse then
                 element:EnableMouse(true)
             end
-        end
-    end
-    
-    -- Reactivate bag windows
-    for i = 1, 13 do
-        local containerFrame = _G["ContainerFrame"..i]
-        if containerFrame and containerFrame.EnableMouse then
-            containerFrame:EnableMouse(true)
         end
     end
 end
@@ -220,7 +157,7 @@ function HideUI.Combat.FadeOutUI()
                     HideUI.State.combatOverrideActive = false
                     -- Restore complete hidden state
                     local state = HideUI.State
-                    if state.barsHidden or state.chatHidden or state.uiHidden or state.bagsHidden or state.microMenuHidden then
+                    if state.barsHidden or state.chatHidden or state.uiHidden then
                         HideUI.Combat.ApplyHiddenState()
                     end
                     -- Cancel timer at end
@@ -246,7 +183,7 @@ end
 function HideUI.Combat.OnEnterCombat()
     local state = HideUI.State
     
-    if state.barsHidden or state.chatHidden or state.uiHidden or state.bagsHidden then
+    if state.barsHidden or state.chatHidden or state.uiHidden then
         HideUI.Combat.ShowUIForCombat()
     end
 end

@@ -83,24 +83,8 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
                 end
             end
         end
-        
-    elseif elementType == "bags" and HideUI.State.bagsHidden then
-        if HideUI.Bags then
-            HideUI.Bags.ShowOnHover()
-        end
-        
-    elseif elementType == "microMenu" and HideUI.State.microMenuHidden then
-        -- Show micro-menus
-        for _, elementName in pairs(HideUI.Config.microMenuElements) do
-            local element = _G[elementName]
-            if element then
-                element:SetAlpha(1)
-                if element.EnableMouse then
-                    element:EnableMouse(true)
-                end
-            end
-        end
     end
+
 end
 
 -- Hide elements after delay
@@ -168,23 +152,6 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
                     end
                 end
             end
-            
-        elseif elementType == "bags" and HideUI.State.bagsHidden then
-            if HideUI.Bags then
-                HideUI.Bags.HideAfterHover()
-            end
-            
-        elseif elementType == "microMenu" and HideUI.State.microMenuHidden and not HideUI.State.combatOverrideActive then
-            -- Fade micro-menus
-            for _, elementName in pairs(HideUI.Config.microMenuElements) do
-                local element = _G[elementName]
-                if element then
-                    element:SetAlpha(0)
-                    if element.EnableMouse then
-                        element:EnableMouse(false)
-                    end
-                end
-            end
         end
         
         hoverTimers[elementType] = nil
@@ -213,7 +180,7 @@ function HideUI.Hover.Initialize()
         local state = HideUI.State
         
         if state.combatOverrideActive or 
-           (not state.barsHidden and not state.chatHidden and not state.uiHidden and not state.sideBarHidden and not state.bagsHidden and not state.microMenuHidden) then
+           (not state.barsHidden and not state.chatHidden and not state.uiHidden and not state.sideBarHidden) then
             return
         end
         

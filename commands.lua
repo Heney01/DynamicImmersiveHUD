@@ -26,59 +26,22 @@ function HideUI.Commands.HandleSlashCommand(msg)
         if HideUI.Core then
             HideUI.Core.ToggleUIElements()
         end
-    elseif msg == "bags" or msg == "sacs" then
-        if HideUI.Core then
-            HideUI.Core.ToggleBags()
-        end
-    elseif msg == "menu" or msg == "micromenu" then
-        if HideUI.Core then
-            HideUI.Core.ToggleMicroMenu()
-        end
     elseif msg == "show" or msg == "afficher" then
         if HideUI.Core then
             HideUI.Core.ShowAll()
         end
-    elseif msg == "status" or msg == "etat" then
-        HideUI.Commands.ShowStatus()
-    elseif msg == "debug" then
-        HideUI.Commands.DebugVisibleElements()
-    elseif msg == "debug bags" or msg == "debug sacs" then
-        if HideUI.Bags and HideUI.Bags.DebugBagOpening then
-            HideUI.Bags.DebugBagOpening()
-        end
-    elseif msg == "bags hide" then
-        if HideUI.Bags then
-            HideUI.Bags.ForceHide()
-        end
-    elseif msg == "bags show" then
-        if HideUI.Bags then
-            HideUI.Bags.ShowOnHover()
-        end
-    elseif msg == "bags debug on" then
-        if HideUI.Bags and HideUI.Bags.SetDebugMode then
-            HideUI.Bags.SetDebugMode(true)
-        end
-    elseif msg == "bags debug off" then
-        if HideUI.Bags and HideUI.Bags.SetDebugMode then
-            HideUI.Bags.SetDebugMode(false)
-        end
-    elseif msg == "help" or msg == "aide" then
-        HideUI.Commands.ShowHelp()
     elseif msg == "reset" then
         HideUI.Commands.ResetAddon()
     end
 end
 
--- Reset addon
+-- Reset addon 
 function HideUI.Commands.ResetAddon()
     if HideUI.Hover then
         HideUI.Hover.CancelAllTimers()
     end
     if HideUI.Chat then
         HideUI.Chat.CancelTemporary()
-    end
-    if HideUI.Bags then
-        HideUI.Bags.CancelTemporary()
     end
     
     if HideUI.Core then
@@ -89,7 +52,7 @@ function HideUI.Commands.ResetAddon()
 end
 
 -- ============================================================================
--- INITIALISATION DES COMMANDES
+-- COMMANDS INITIALIZATION
 -- ============================================================================
 
 function HideUI.Commands.Initialize()
