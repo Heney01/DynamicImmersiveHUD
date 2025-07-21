@@ -1,0 +1,14 @@
+<Bindings>
+    <Binding name="HIDEUI_TOGGLE_BARS" category="ADDONS" header="HIDEUI" runOnUp="true">
+        HideUI_ToggleBars()
+    </Binding>
+    <Binding name="HIDEUI_TOGGLE_CHAT" category="ADDONS" runOnUp="true">
+        HideUI_ToggleChat()
+    </Binding>
+    <Binding name="HIDEUI_TOGGLE_ALL" category="ADDONS" runOnUp="true">
+        HideUI_ToggleAll()
+    </Binding>
+    <Binding name="HIDEUI_SHOW_ALL" category="ADDONS" runOnUp="true">
+        HideUI_ShowAll()
+    </Binding>
+</Bindings>
