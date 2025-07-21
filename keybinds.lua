@@ -1,51 +1,51 @@
 -- Keybinds.lua
--- Module de gestion des raccourcis clavier
+-- Keyboard shortcut management module
 
 HideUI = HideUI or {}
 HideUI.Keybinds = {}
 
 -- ============================================================================
--- CONFIGURATION DES KEYBINDINGS
+-- KEYBINDING CONFIGURATION
 -- ============================================================================
 
--- Headers et noms pour les keybindings
+-- Headers and names for keybindings
 BINDING_HEADER_HIDEUIELEMENTS = "Hide UI Elements"
-BINDING_NAME_HIDEUI_TOGGLE_ALL = "Basculer l'interface complète"
-BINDING_NAME_HIDEUI_TOGGLE_BARS = "Basculer les barres d'action"
-BINDING_NAME_HIDEUI_TOGGLE_CHAT = "Basculer le chat"
-BINDING_NAME_HIDEUI_TOGGLE_BAGS = "Afficher les sacs temporairement"
+BINDING_NAME_HIDEUI_TOGGLE_ALL = "Toggle complete interface"
+BINDING_NAME_HIDEUI_TOGGLE_BARS = "Toggle action bars"
+BINDING_NAME_HIDEUI_TOGGLE_CHAT = "Toggle chat"
+BINDING_NAME_HIDEUI_TOGGLE_BAGS = "Show bags temporarily"
 
 -- ============================================================================
--- CONFIGURATION AUTOMATIQUE DES TOUCHES
+-- AUTOMATIC KEY CONFIGURATION
 -- ============================================================================
 
--- Configure automatiquement les raccourcis clavier
+-- Automatically configure keyboard shortcuts
 function HideUI.Keybinds.Setup()
     if InCombatLockdown() then
-        -- Si on est en combat, reporter la configuration
+        -- If in combat, postpone configuration
         C_Timer.After(2, HideUI.Keybinds.Setup)
         return
     end
     
-    -- Créer une macro pour basculer l'interface complète
+    -- Create macro to toggle complete interface
     local macroName = "HideUIToggle"
     local macroBody = "/script HideUI_ToggleAll()"
     
-    -- Supprimer l'ancienne macro si elle existe
+    -- Delete old macro if it exists
     local macroIndex = GetMacroIndexByName(macroName)
     if macroIndex ~= 0 then
         DeleteMacro(macroIndex)
     end
     
-    -- Créer la nouvelle macro
+    -- Create new macro
     local success = CreateMacro(macroName, "INV_Misc_QuestionMark", macroBody, nil)
     if success then
-        -- Assigner la touche '<'
+        -- Assign '<' key
         SetBinding("<", "MACRO " .. macroName)
-        print("|cFF00FF00HideUI:|r Touche '<' configurée pour basculer l'interface")
+        print("|cFF00FF00HideUI:|r '<' key configured to toggle interface")
     end
     
-    -- Créer une macro pour les sacs
+    -- Create macro for bags
     local bagMacroName = "HideUIBags"
     local bagMacroBody = "/script HideUI_ShowBagsTemporary()"
     
@@ -56,84 +56,84 @@ function HideUI.Keybinds.Setup()
     
     local bagSuccess = CreateMacro(bagMacroName, "INV_Misc_Bag_08", bagMacroBody, nil)
     if bagSuccess then
-        -- Assigner la touche 'B' pour les sacs
+        -- Assign 'B' key for bags
         SetBinding("B", "MACRO " .. bagMacroName)
-        print("|cFF00FF00HideUI:|r Touche 'B' configurée pour afficher les sacs temporairement")
+        print("|cFF00FF00HideUI:|r 'B' key configured to show bags temporarily")
     end
     
-    -- Sauvegarder les raccourcis
+    -- Save shortcuts
     SaveBindings(GetCurrentBindingSet())
 end
 
 -- ============================================================================
--- GESTION ALTERNATIVE DES RACCOURCIS
+-- ALTERNATIVE SHORTCUT MANAGEMENT
 -- ============================================================================
 
--- Configuration alternative sans macros (pour éviter les conflits)
+-- Alternative configuration without macros (to avoid conflicts)
 function HideUI.Keybinds.SetupAlternative()
     if InCombatLockdown() then
         return
     end
     
-    -- Essayer d'assigner directement les touches aux fonctions globales
+    -- Try to assign keys directly to global functions
     SetBinding("<", "HIDEUI_TOGGLE_ALL")
     SetBinding("B", "HIDEUI_TOGGLE_BAGS")
     
     SaveBindings(GetCurrentBindingSet())
-    print("|cFF00FF00HideUI:|r Raccourcis configurés en mode alternatif")
+    print("|cFF00FF00HideUI:|r Shortcuts configured in alternative mode")
 end
 
--- Vérifie et répare les raccourcis si nécessaire
+-- Check and repair shortcuts if needed
 function HideUI.Keybinds.CheckAndRepair()
     local binding1 = GetBinding("<")
     local binding2 = GetBinding("B")
     
     if not binding1 or not binding1:find("HideUI") then
-        print("|cFFFFAA00HideUI:|r Raccourci '<' manquant, reconfiguration...")
+        print("|cFFFFAA00HideUI:|r '<' shortcut missing, reconfiguring...")
         HideUI.Keybinds.Setup()
     end
     
     if not binding2 or not binding2:find("HideUI") then
-        print("|cFFFFAA00HideUI:|r Raccourci 'B' manquant, reconfiguration...")
+        print("|cFFFFAA00HideUI:|r 'B' shortcut missing, reconfiguring...")
         HideUI.Keybinds.Setup()
     end
 end
 
 -- ============================================================================
--- FONCTIONS UTILITAIRES
+-- UTILITY FUNCTIONS
 -- ============================================================================
 
--- Affiche les raccourcis actuels
+-- Display current shortcuts
 function HideUI.Keybinds.ShowCurrentBindings()
-    print("|cFF00FF00HideUI Raccourcis actuels:|r")
+    print("|cFF00FF00HideUI Current shortcuts:|r")
     
     local binding1 = GetBinding("<")
     local binding2 = GetBinding("B")
     
     if binding1 then
-        print("  Touche '<': " .. binding1)
+        print("  '<' key: " .. binding1)
     else
-        print("  Touche '<': |cFFFF0000Non configurée|r")
+        print("  '<' key: |cFFFF0000Not configured|r")
     end
     
     if binding2 then
-        print("  Touche 'B': " .. binding2)
+        print("  'B' key: " .. binding2)
     else
-        print("  Touche 'B': |cFFFF0000Non configurée|r")
+        print("  'B' key: |cFFFF0000Not configured|r")
     end
 end
 
--- Supprime les raccourcis HideUI
+-- Remove HideUI shortcuts
 function HideUI.Keybinds.RemoveBindings()
     if InCombatLockdown() then
-        print("|cFFFF0000HideUI:|r Impossible de supprimer les raccourcis en combat")
+        print("|cFFFF0000HideUI:|r Cannot remove shortcuts while in combat")
         return
     end
     
-    SetBinding("<")  -- Supprime le binding
-    SetBinding("B")  -- Supprime le binding
+    SetBinding("<")  -- Remove binding
+    SetBinding("B")  -- Remove binding
     
-    -- Supprimer les macros associées
+    -- Delete associated macros
     local macroIndex1 = GetMacroIndexByName("HideUIToggle")
     if macroIndex1 ~= 0 then
         DeleteMacro(macroIndex1)
@@ -145,35 +145,35 @@ function HideUI.Keybinds.RemoveBindings()
     end
     
     SaveBindings(GetCurrentBindingSet())
-    print("|cFF00FF00HideUI:|r Raccourcis supprimés")
+    print("|cFF00FF00HideUI:|r Shortcuts removed")
 end
 
 -- ============================================================================
--- GESTION DES CONFLITS
+-- CONFLICT MANAGEMENT
 -- ============================================================================
 
--- Vérifie s'il y a des conflits avec d'autres addons
+-- Check for conflicts with other addons
 function HideUI.Keybinds.CheckConflicts()
     local conflicts = {}
     
-    -- Vérifier la touche '<'
+    -- Check '<' key
     local binding1 = GetBinding("<")
     if binding1 and not binding1:find("HideUI") then
         table.insert(conflicts, {key = "<", current = binding1})
     end
     
-    -- Vérifier la touche 'B'
+    -- Check 'B' key
     local binding2 = GetBinding("B")
     if binding2 and not binding2:find("HideUI") and not binding2:find("TOGGLEBAG") then
         table.insert(conflicts, {key = "B", current = binding2})
     end
     
     if #conflicts > 0 then
-        print("|cFFFFAA00HideUI:|r Conflits de raccourcis détectés:")
+        print("|cFFFFAA00HideUI:|r Shortcut conflicts detected:")
         for _, conflict in ipairs(conflicts) do
-            print("  Touche '" .. conflict.key .. "' utilisée par: " .. conflict.current)
+            print("  '" .. conflict.key .. "' key used by: " .. conflict.current)
         end
-        print("Utilisez |cFFFFFF00/hideui bindings remove|r puis |cFFFFFF00/hideui bindings setup|r pour forcer la configuration")
+        print("Use |cFFFFFF00/hideui bindings remove|r then |cFFFFFF00/hideui bindings setup|r to force configuration")
         return false
     end
     

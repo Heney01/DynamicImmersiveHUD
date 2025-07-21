@@ -1,10 +1,10 @@
 -- Bags.lua
--- Module de gestion des sacs
+-- Bags management module
 
 HideUI = HideUI or {}
 HideUI.Bags = {}
 
--- Variables locales
+-- Local variables
 local bagTemporaryActive = false
 local bagTimer = nil
 local originalToggleBag = nil
@@ -12,9 +12,9 @@ local originalToggleAllBags = nil
 local originalToggleBackpack = nil
 local merchantActive = false
 local merchantFrame = nil
-local debugMode = false -- Variable pour activer/désactiver le debug
+local debugMode = false -- Variable to enable/disable debug
 
--- Fonction de debug conditionnelle
+-- Conditional debug function
 local function DebugPrint(message)
     if debugMode then
         print("|cFFFFAA00HideUI Debug:|r " .. message)
@@ -22,22 +22,22 @@ local function DebugPrint(message)
 end
 
 -- ============================================================================
--- FONCTIONS PRINCIPALES
+-- MAIN FUNCTIONS
 -- ============================================================================
 
--- Affiche temporairement les sacs
+-- Show bags temporarily
 function HideUI.Bags.ShowTemporary()
     if not HideUI.State.bagsHidden then 
-        -- Si les sacs ne sont pas masqués, utiliser le comportement normal
+        -- If bags are not hidden, use normal behavior
         if ToggleAllBags then
             ToggleAllBags()
         end
         return 
     end
     
-    -- Si l'affichage temporaire est déjà actif, on ferme les sacs et on désactive le mode temporaire
+    -- If temporary display is already active, close bags and disable temporary mode
     if bagTemporaryActive then
-        -- Fermer les sacs
+        -- Close bags
         if originalToggleAllBags then
             originalToggleAllBags()
         elseif ToggleAllBags then
@@ -50,24 +50,24 @@ function HideUI.Bags.ShowTemporary()
             bagTemporaryActive = tempBagTemporaryActive
         end
         
-        -- Désactiver le mode temporaire immédiatement
+        -- Disable temporary mode immediately
         HideUI.Bags.CancelTemporary()
         
-        -- Masquer les éléments de sacs
+        -- Hide bag elements
         HideUI.Bags.HideAfterDelay()
         
-        print("|cFF87CEEB HideUI:|r Sacs fermés et masqués")
+        print("|cFF87CEEB HideUI:|r Bags closed and hidden")
         return
     end
     
     bagTemporaryActive = true
     
-    -- Annuler le timer précédent s'il existe
+    -- Cancel previous timer if exists
     if bagTimer then
         bagTimer:Cancel()
     end
     
-    -- Afficher les éléments de sacs d'abord
+    -- Show bag elements first
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -78,13 +78,13 @@ function HideUI.Bags.ShowTemporary()
         end
     end
     
-    -- Ouvrir réellement les sacs - utiliser la fonction originale ou une approche alternative
+    -- Actually open bags - use original function or alternative approach
     C_Timer.After(0.1, function()
         if originalToggleAllBags then
-            -- Utiliser la fonction originale sauvegardée
+            -- Use saved original function
             originalToggleAllBags()
         elseif ToggleAllBags then
-            -- Forcer l'ouverture en désactivant temporairement notre hook
+            -- Force opening by temporarily disabling our hook
             local tempBagsHidden = HideUI.State.bagsHidden
             local tempBagTemporaryActive = bagTemporaryActive
             HideUI.State.bagsHidden = false
@@ -93,7 +93,7 @@ function HideUI.Bags.ShowTemporary()
             HideUI.State.bagsHidden = tempBagsHidden
             bagTemporaryActive = tempBagTemporaryActive
         else
-            -- Méthode alternative : simuler un clic sur le bouton de sac
+            -- Alternative method: simulate bag button click
             local backpackButton = _G["MainMenuBarBackpackButton"]
             if backpackButton and backpackButton:IsVisible() then
                 backpackButton:Click()
@@ -101,7 +101,7 @@ function HideUI.Bags.ShowTemporary()
         end
     end)
     
-    -- Afficher toutes les fenêtres de sacs ouvertes
+    -- Show all open bag windows
     C_Timer.After(0.2, function()
         for i = 1, 13 do
             local containerFrame = _G["ContainerFrame"..i]
@@ -112,44 +112,44 @@ function HideUI.Bags.ShowTemporary()
         end
     end)
     
-    print("|cFF87CEEB HideUI:|r Sacs affichés temporairement")
+    print("|cFF87CEEB HideUI:|r Bags shown temporarily")
     
-    -- Programmer le masquage automatique dans 8 secondes (réduit car masquage instantané)
+    -- Schedule automatic hiding in 8 seconds (reduced because instant hiding)
     bagTimer = C_Timer.NewTimer(8, function()
         HideUI.Bags.HideAfterDelay()
     end)
 end
 
--- Masque les sacs après le délai
+-- Hide bags after delay
 function HideUI.Bags.HideAfterDelay()
-    DebugPrint("HideAfterDelay appelé")
+    DebugPrint("HideAfterDelay called")
     DebugPrint("- bagsHidden: " .. (HideUI.State.bagsHidden and "true" or "false"))
     DebugPrint("- merchantActive: " .. (merchantActive and "true" or "false"))
     DebugPrint("- combatOverrideActive: " .. (HideUI.State.combatOverrideActive and "true" or "false"))
     
     if not HideUI.State.bagsHidden then 
-        DebugPrint("Arrêt: sacs pas supposés être masqués")
+        DebugPrint("Stop: bags not supposed to be hidden")
         return
     end
     
-    -- Ne pas masquer si on est chez un marchand
+    -- Don't hide if at merchant
     if merchantActive then
-        print("|cFF87CEEB HideUI:|r Masquage des sacs annulé (marchand actif)")
+        print("|cFF87CEEB HideUI:|r Bag hiding canceled (merchant active)")
         return
     end
     
-    -- Ne pas masquer en combat
+    -- Don't hide in combat
     if HideUI.State.combatOverrideActive then
-        DebugPrint("Masquage des sacs annulé (combat actif)")
+        DebugPrint("Bag hiding canceled (combat active)")
         return
     end
     
-    -- Désactiver le mode temporaire
+    -- Disable temporary mode
     bagTemporaryActive = false
     
-    DebugPrint("Procédure de masquage instantané")
+    DebugPrint("Instant hiding procedure")
     
-    -- Masquage instantané (sans fondu)
+    -- Instant hiding (no fade)
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -160,7 +160,7 @@ function HideUI.Bags.HideAfterDelay()
         end
     end
     
-    -- Masquer toutes les fenêtres de sacs
+    -- Hide all bag windows
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
         if containerFrame then
@@ -169,12 +169,12 @@ function HideUI.Bags.HideAfterDelay()
         end
     end
     
-    print("|cFF87CEEB HideUI:|r Sacs masqués instantanément")
+    print("|cFF87CEEB HideUI:|r Bags hidden instantly")
 end
 
--- Applique le basculement des sacs
+-- Apply bag toggle
 function HideUI.Bags.ApplyToggle(isHidden)
-    -- Annuler l'affichage temporaire si actif
+    -- Cancel temporary display if active
     if bagTemporaryActive then
         bagTemporaryActive = false
         if bagTimer then
@@ -182,13 +182,13 @@ function HideUI.Bags.ApplyToggle(isHidden)
         end
     end
     
-    -- Si en combat, ne pas appliquer immédiatement
+    -- If in combat, don't apply immediately
     if not HideUI.State.combatOverrideActive then
         if HideUI.Core then
             HideUI.Core.ToggleElementList(HideUI.Config.bagElements, isHidden, "bags")
         end
         
-        -- Gestion spéciale des fenêtres de sacs - instantané
+        -- Special handling of bag windows - instant
         for i = 1, 13 do
             local containerFrame = _G["ContainerFrame"..i]
             if containerFrame then
@@ -205,18 +205,18 @@ function HideUI.Bags.ApplyToggle(isHidden)
         end
     end
     
-    -- Si on masque les sacs, s'assurer que tout est bien masqué instantanément
+    -- If hiding bags, ensure everything is hidden instantly
     if isHidden then
-        -- Pas de délai, masquage immédiat
+        -- No delay, immediate hiding
         HideUI.Bags.ForceHide()
     end
 end
 
--- Affiche les sacs au survol
+-- Show bags on hover
 function HideUI.Bags.ShowOnHover()
     if not HideUI.State.bagsHidden or HideUI.State.combatOverrideActive then return end
     
-    -- Affichage instantané des éléments de sacs
+    -- Instant display of bag elements
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -228,13 +228,13 @@ function HideUI.Bags.ShowOnHover()
     end
 end
 
--- Masque les sacs après le survol
+-- Hide bags after hover
 function HideUI.Bags.HideAfterHover()
     if not HideUI.State.bagsHidden or bagTemporaryActive or HideUI.State.combatOverrideActive or merchantActive then 
         return 
     end
     
-    -- Masquage instantané des sacs
+    -- Instant bag hiding
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -247,7 +247,7 @@ function HideUI.Bags.HideAfterHover()
 end
 
 -- ============================================================================
--- HOOKS DES FONCTIONS DE SACS
+-- BAG FUNCTION HOOKS
 -- ============================================================================
 
 function HideUI.Bags.SetupHooks()
@@ -257,7 +257,7 @@ function HideUI.Bags.SetupHooks()
         ToggleBag = function(bagID)
             if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
                 HideUI.Bags.ShowTemporary()
-                -- Ne pas appeler la fonction originale ici car ShowTemporary s'en charge
+                -- Don't call original function here as ShowTemporary handles it
                 return
             end
             return originalToggleBag(bagID)
@@ -270,7 +270,7 @@ function HideUI.Bags.SetupHooks()
         ToggleAllBags = function()
             if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
                 HideUI.Bags.ShowTemporary()
-                -- Ne pas appeler la fonction originale ici car ShowTemporary s'en charge
+                -- Don't call original function here as ShowTemporary handles it
                 return
             end
             return originalToggleAllBags()
@@ -283,14 +283,14 @@ function HideUI.Bags.SetupHooks()
         ToggleBackpack = function()
             if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
                 HideUI.Bags.ShowTemporary()
-                -- Ne pas appeler la fonction originale ici car ShowTemporary s'en charge
+                -- Don't call original function here as ShowTemporary handles it
                 return
             end
             return originalToggleBackpack()
         end
     end
     
-    -- Hook des boutons de sacs individuels
+    -- Hook individual bag buttons
     for i = 0, 4 do
         local bagButton = _G["CharacterBag"..i.."Slot"]
         if bagButton and not bagButton.hideUIHooked then
@@ -303,7 +303,7 @@ function HideUI.Bags.SetupHooks()
         end
     end
     
-    -- Hook du bouton principal de sac à dos
+    -- Hook main backpack button
     local backpackButton = _G["MainMenuBarBackpackButton"]
     if backpackButton and not backpackButton.hideUIHooked then
         backpackButton:HookScript("OnClick", function()
@@ -314,38 +314,38 @@ function HideUI.Bags.SetupHooks()
         backpackButton.hideUIHooked = true
     end
     
-    -- Créer un frame pour écouter les événements de marchand
+    -- Create frame to listen for merchant events
     if not merchantFrame then
         merchantFrame = CreateFrame("Frame")
         merchantFrame:RegisterEvent("MERCHANT_SHOW")
         merchantFrame:RegisterEvent("MERCHANT_CLOSED")
         
         merchantFrame:SetScript("OnEvent", function(self, event, ...)
-            DebugPrint("Événement marchand reçu: " .. event)
+            DebugPrint("Merchant event received: " .. event)
             
             if event == "MERCHANT_SHOW" then
-                DebugPrint("Marchand ouvert")
+                DebugPrint("Merchant opened")
                 HideUI.Bags.ShowForMerchant()
             elseif event == "MERCHANT_CLOSED" then
-                DebugPrint("Marchand fermé")
+                DebugPrint("Merchant closed")
                 HideUI.Bags.HideAfterMerchant()
             end
         end)
         
-        print("|cFF00FF00HideUI:|r Gestionnaire d'événements marchand créé")
+        print("|cFF00FF00HideUI:|r Merchant event handler created")
     end
 end
 
 -- ============================================================================
--- FONCTIONS D'ÉTAT
+-- STATE FUNCTIONS
 -- ============================================================================
 
--- Vérifie si l'affichage temporaire est actif
+-- Check if temporary display is active
 function HideUI.Bags.IsTemporaryActive()
     return bagTemporaryActive
 end
 
--- Annule l'affichage temporaire
+-- Cancel temporary display
 function HideUI.Bags.CancelTemporary()
     if bagTemporaryActive then
         bagTemporaryActive = false
@@ -356,20 +356,20 @@ function HideUI.Bags.CancelTemporary()
     end
 end
 
--- Force le masquage immédiat des sacs
+-- Force immediate bag hiding
 function HideUI.Bags.ForceHide()
     if not HideUI.State.bagsHidden then return end
     
-    -- Ne pas masquer si on est chez un marchand
+    -- Don't hide if at merchant
     if merchantActive then
-        print("|cFF87CEEB HideUI:|r Sacs maintenus visibles (marchand)")
+        print("|cFF87CEEB HideUI:|r Bags kept visible (merchant)")
         return
     end
     
-    -- Désactiver le mode temporaire
+    -- Disable temporary mode
     HideUI.Bags.CancelTemporary()
     
-    -- Masquer immédiatement les éléments de sacs
+    -- Immediately hide bag elements
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -380,7 +380,7 @@ function HideUI.Bags.ForceHide()
         end
     end
     
-    -- Masquer toutes les fenêtres de sacs
+    -- Hide all bag windows
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
         if containerFrame then
@@ -391,76 +391,76 @@ function HideUI.Bags.ForceHide()
 end
 
 -- ============================================================================
--- FONCTIONS DE DEBUG POUR LES SACS
+-- BAG DEBUG FUNCTIONS
 -- ============================================================================
 
--- Fonction de debug pour tester l'ouverture des sacs
+-- Debug function to test bag opening
 function HideUI.Bags.DebugBagOpening()
     print("|cFF00FF00HideUI Bags Debug:|r")
-    print("  État des sacs masqués: " .. (HideUI.State.bagsHidden and "OUI" or "NON"))
-    print("  Affichage temporaire actif: " .. (bagTemporaryActive and "OUI" or "NON"))
-    print("  Marchand actif: " .. (merchantActive and "OUI" or "NON"))
-    print("  Combat override actif: " .. (HideUI.State.combatOverrideActive and "OUI" or "NON"))
-    print("  Timer actif: " .. (bagTimer and "OUI" or "NON"))
+    print("  Bags hidden state: " .. (HideUI.State.bagsHidden and "YES" or "NO"))
+    print("  Temporary display active: " .. (bagTemporaryActive and "YES" or "NO"))
+    print("  Merchant active: " .. (merchantActive and "YES" or "NO"))
+    print("  Combat override active: " .. (HideUI.State.combatOverrideActive and "YES" or "NO"))
+    print("  Timer active: " .. (bagTimer and "YES" or "NO"))
     
-    -- Tester les fonctions disponibles
-    print("  ToggleAllBags disponible: " .. (ToggleAllBags and "OUI" or "NON"))
-    print("  ToggleBackpack disponible: " .. (ToggleBackpack and "OUI" or "NON"))
-    print("  originalToggleAllBags sauvegardé: " .. (originalToggleAllBags and "OUI" or "NON"))
+    -- Test available functions
+    print("  ToggleAllBags available: " .. (ToggleAllBags and "YES" or "NO"))
+    print("  ToggleBackpack available: " .. (ToggleBackpack and "YES" or "NO"))
+    print("  originalToggleAllBags saved: " .. (originalToggleAllBags and "YES" or "NO"))
     
-    -- Vérifier l'état du marchand dans le jeu
+    -- Check merchant state in game
     local merchantShown = MerchantFrame and MerchantFrame:IsShown()
-    print("  MerchantFrame affiché: " .. (merchantShown and "OUI" or "NON"))
+    print("  MerchantFrame shown: " .. (merchantShown and "YES" or "NO"))
     
-    -- Vérifier le bouton de sac
+    -- Check bag button
     local backpackButton = _G["MainMenuBarBackpackButton"]
     if backpackButton then
-        print("  Bouton sac à dos trouvé: OUI")
-        print("  Bouton visible: " .. (backpackButton:IsVisible() and "OUI" or "NON"))
-        print("  Bouton enabled: " .. (backpackButton:IsEnabled() and "OUI" or "NON"))
-        print("  Alpha du bouton: " .. backpackButton:GetAlpha())
+        print("  Backpack button found: YES")
+        print("  Button visible: " .. (backpackButton:IsVisible() and "YES" or "NO"))
+        print("  Button enabled: " .. (backpackButton:IsEnabled() and "YES" or "NO"))
+        print("  Button alpha: " .. backpackButton:GetAlpha())
     else
-        print("  Bouton sac à dos trouvé: NON")
+        print("  Backpack button found: NO")
     end
     
-    -- Vérifier l'état des sacs
+    -- Check bag state
     local numBagsOpen = 0
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
         if containerFrame and containerFrame:IsShown() then
             numBagsOpen = numBagsOpen + 1
-            print("  ContainerFrame" .. i .. " ouvert (alpha: " .. containerFrame:GetAlpha() .. ")")
+            print("  ContainerFrame" .. i .. " open (alpha: " .. containerFrame:GetAlpha() .. ")")
         end
     end
-    print("  Nombre de sacs ouverts: " .. numBagsOpen)
+    print("  Number of bags open: " .. numBagsOpen)
 end
 
 -- ============================================================================
--- GESTION DES MARCHANDS
+-- MERCHANT MANAGEMENT
 -- ============================================================================
 
--- Affiche les sacs quand on parle à un marchand
+-- Show bags when talking to merchant
 function HideUI.Bags.ShowForMerchant()
     if not HideUI.State.bagsHidden then return end
     
-    DebugPrint("ShowForMerchant appelé")
+    DebugPrint("ShowForMerchant called")
     
     merchantActive = true
     
-    -- Annuler TOUS les timers et modes en cours
+    -- Cancel ALL timers and modes in progress
     if bagTimer then
         bagTimer:Cancel()
         bagTimer = nil
-        DebugPrint("Timer de sacs annulé")
+        DebugPrint("Bag timer canceled")
     end
     
-    -- Forcer la désactivation du mode temporaire
+    -- Force disable temporary mode
     if bagTemporaryActive then
         bagTemporaryActive = false
-        DebugPrint("Mode temporaire désactivé")
+        DebugPrint("Temporary mode disabled")
     end
     
-    -- Afficher les éléments de sacs
+    -- Show bag elements
     for _, elementName in pairs(HideUI.Config.bagElements) do
         local element = _G[elementName]
         if element then
@@ -471,7 +471,7 @@ function HideUI.Bags.ShowForMerchant()
         end
     end
     
-    -- Ouvrir automatiquement les sacs si ils ne sont pas déjà ouverts
+    -- Automatically open bags if not already open
     local numBagsOpen = 0
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
@@ -482,21 +482,21 @@ function HideUI.Bags.ShowForMerchant()
         end
     end
     
-    DebugPrint(numBagsOpen .. " sacs déjà ouverts")
+    DebugPrint(numBagsOpen .. " bags already open")
     
-    -- Si aucun sac n'est ouvert, les ouvrir
+    -- If no bags are open, open them
     if numBagsOpen == 0 then
         C_Timer.After(0.1, function()
             if not merchantActive then
-                DebugPrint("Marchand fermé avant ouverture des sacs")
+                DebugPrint("Merchant closed before opening bags")
                 return
             end
             
             if originalToggleAllBags then
-                DebugPrint("Ouverture avec originalToggleAllBags")
+                DebugPrint("Opening with originalToggleAllBags")
                 originalToggleAllBags()
             elseif ToggleAllBags then
-                DebugPrint("Ouverture avec ToggleAllBags")
+                DebugPrint("Opening with ToggleAllBags")
                 local tempBagsHidden = HideUI.State.bagsHidden
                 local tempMerchantActive = merchantActive
                 HideUI.State.bagsHidden = false
@@ -507,10 +507,10 @@ function HideUI.Bags.ShowForMerchant()
             end
         end)
         
-        -- S'assurer que les sacs sont visibles après ouverture
+        -- Ensure bags are visible after opening
         C_Timer.After(0.3, function()
             if not merchantActive then
-                DebugPrint("Marchand fermé avant vérification finale")
+                DebugPrint("Merchant closed before final check")
                 return
             end
             
@@ -519,47 +519,47 @@ function HideUI.Bags.ShowForMerchant()
                 if containerFrame and containerFrame:IsShown() then
                     containerFrame:SetAlpha(1)
                     containerFrame:EnableMouse(true)
-                    DebugPrint("ContainerFrame" .. i .. " forcé visible")
+                    DebugPrint("ContainerFrame" .. i .. " forced visible")
                 end
             end
         end)
     end
     
-    print("|cFF87CEEB HideUI:|r Sacs affichés pour le marchand")
+    print("|cFF87CEEB HideUI:|r Bags shown for merchant")
 end
 
--- Masque les sacs quand on quitte le marchand
+-- Hide bags when leaving merchant
 function HideUI.Bags.HideAfterMerchant()
     if not merchantActive then 
-        DebugPrint("HideAfterMerchant appelé mais marchand déjà inactif")
+        DebugPrint("HideAfterMerchant called but merchant already inactive")
         return 
     end
     
-    DebugPrint("HideAfterMerchant appelé, désactivation du mode marchand")
+    DebugPrint("HideAfterMerchant called, disabling merchant mode")
     merchantActive = false
     
-    -- Si les sacs sont supposés être masqués, les masquer instantanément
+    -- If bags are supposed to be hidden, hide them instantly
     if HideUI.State.bagsHidden then
-        DebugPrint("Masquage des sacs car bagsHidden = true")
+        DebugPrint("Hiding bags because bagsHidden = true")
         HideUI.Bags.HideAfterDelay()
     else
-        DebugPrint("Pas de masquage car bagsHidden = false")
+        DebugPrint("No hiding because bagsHidden = false")
     end
     
-    print("|cFF87CEEB HideUI:|r Marchand fermé, sacs masqués instantanément")
+    print("|cFF87CEEB HideUI:|r Merchant closed, bags hidden instantly")
 end
 
--- Vérifie si on est actuellement chez un marchand
+-- Check if currently at merchant
 function HideUI.Bags.IsMerchantActive()
     return merchantActive
 end
 
--- Active/désactive le mode debug pour les sacs
+-- Enable/disable debug mode for bags
 function HideUI.Bags.SetDebugMode(enabled)
     debugMode = enabled
     if enabled then
-        print("|cFF00FF00HideUI:|r Debug des sacs activé")
+        print("|cFF00FF00HideUI:|r Bag debug enabled")
     else
-        print("|cFF00FF00HideUI:|r Debug des sacs désactivé")
+        print("|cFF00FF00HideUI:|r Bag debug disabled")
     end
 end

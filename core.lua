@@ -1,16 +1,16 @@
 -- Core.lua
--- Module principal de HideUI Elements
--- Gère l'initialisation et la coordination des modules
+-- Main module for HideUI Elements
+-- Manages initialization and coordination of modules
 
 local addonName, addon = ...
 
 -- ============================================================================
--- NAMESPACE ET VARIABLES GLOBALES
+-- NAMESPACE AND GLOBAL VARIABLES
 -- ============================================================================
 HideUI = HideUI or {}
 HideUI.Core = {}
 
--- Variables d'état globales
+-- Global state variables
 HideUI.State = {
     barsHidden = false,
     chatHidden = false,
@@ -23,25 +23,25 @@ HideUI.State = {
     originalAlphas = {}
 }
 
--- Frame principal
+-- Main frame
 local frame = CreateFrame("Frame", "HideUIElementsFrame")
 
 -- ============================================================================
--- FONCTIONS PRINCIPALES
+-- MAIN FUNCTIONS
 -- ============================================================================
 
--- Sauvegarde des valeurs alpha originales
+-- Save original alpha values
 function HideUI.Core.SaveOriginalAlphas()
     local state = HideUI.State
     local config = HideUI.Config
     
-    -- Vérifier que la configuration est chargée
+    -- Check that configuration is loaded
     if not config then
-        print("|cFFFF0000HideUI:|r Configuration non chargée, report de la sauvegarde des alphas")
+        print("|cFFFF0000HideUI:|r Configuration not loaded, postponing alpha save")
         return
     end
     
-    -- Barres d'action
+    -- Action bars
     if config.actionBars then
         for _, barName in pairs(config.actionBars) do
             local bar = _G[barName]
@@ -51,7 +51,7 @@ function HideUI.Core.SaveOriginalAlphas()
         end
     end
     
-    -- Éléments d'UI
+    -- UI elements
     if config.uiElements then
         for _, elementName in pairs(config.uiElements) do
             local element = _G[elementName]
@@ -61,7 +61,7 @@ function HideUI.Core.SaveOriginalAlphas()
         end
     end
     
-    -- Éléments de sacs
+    -- Bag elements
     if config.bagElements then
         for _, elementName in pairs(config.bagElements) do
             local element = _G[elementName]
@@ -82,13 +82,13 @@ function HideUI.Core.SaveOriginalAlphas()
     end
 end
 
--- Applique le masquage/affichage à une liste d'éléments
+-- Apply hide/show to an element list
 function HideUI.Core.ToggleElementList(elementList, isHidden, elementType)
     local state = HideUI.State
     
-    -- Vérifier que la liste d'éléments existe
+    -- Check that element list exists
     if not elementList then
-        print("|cFFFF0000HideUI:|r Liste d'éléments non trouvée pour " .. (elementType or "inconnu"))
+        print("|cFFFF0000HideUI:|r Element list not found for " .. (elementType or "unknown"))
         return
     end
     
@@ -111,7 +111,7 @@ function HideUI.Core.ToggleElementList(elementList, isHidden, elementType)
     end
 end
 
--- Basculer les barres d'action
+-- Toggle action bars
 function HideUI.Core.ToggleActionBars()
     HideUI.Core.SaveOriginalAlphas()
     HideUI.State.barsHidden = not HideUI.State.barsHidden
@@ -120,24 +120,24 @@ function HideUI.Core.ToggleActionBars()
         HideUI.Core.ToggleElementList(HideUI.Config.actionBars, HideUI.State.barsHidden, "bars")
     end
     
-    local status = HideUI.State.barsHidden and "masquées" or "affichées"
-    print("|cFF00FF00HideUI:|r Barres d'action " .. status)
+    local status = HideUI.State.barsHidden and "hidden" or "shown"
+    print("|cFF00FF00HideUI:|r Action bars " .. status)
 end
 
--- Basculer le chat
+-- Toggle chat
 function HideUI.Core.ToggleChat()
     HideUI.State.chatHidden = not HideUI.State.chatHidden
     
-    -- Déléguer au module Chat
+    -- Delegate to Chat module
     if HideUI.Chat then
         HideUI.Chat.ApplyToggle(HideUI.State.chatHidden)
     end
     
-    local status = HideUI.State.chatHidden and "masqué" or "affiché"
+    local status = HideUI.State.chatHidden and "hidden" or "shown"
     print("|cFF00FF00HideUI:|r Chat " .. status)
 end
 
--- Basculer les éléments d'interface
+-- Toggle interface elements
 function HideUI.Core.ToggleUIElements()
     HideUI.Core.SaveOriginalAlphas()
     HideUI.State.uiHidden = not HideUI.State.uiHidden
@@ -146,25 +146,25 @@ function HideUI.Core.ToggleUIElements()
         HideUI.Core.ToggleElementList(HideUI.Config.uiElements, HideUI.State.uiHidden, "ui")
     end
     
-    local status = HideUI.State.uiHidden and "masqués" or "affichés"
-    print("|cFF00FF00HideUI:|r Éléments d'interface " .. status)
+    local status = HideUI.State.uiHidden and "hidden" or "shown"
+    print("|cFF00FF00HideUI:|r Interface elements " .. status)
 end
 
--- Basculer les sacs
+-- Toggle bags
 function HideUI.Core.ToggleBags()
     HideUI.Core.SaveOriginalAlphas()
     HideUI.State.bagsHidden = not HideUI.State.bagsHidden
     
-    -- Déléguer au module Bags
+    -- Delegate to Bags module
     if HideUI.Bags then
         HideUI.Bags.ApplyToggle(HideUI.State.bagsHidden)
     end
     
-    local status = HideUI.State.bagsHidden and "masqués" or "affichés"
-    print("|cFF00FF00HideUI:|r Sacs " .. status)
+    local status = HideUI.State.bagsHidden and "hidden" or "shown"
+    print("|cFF00FF00HideUI:|r Bags " .. status)
 end
 
--- Basculer les micro-menus
+-- Toggle micro-menus
 function HideUI.Core.ToggleMicroMenu()
     HideUI.Core.SaveOriginalAlphas()
     HideUI.State.microMenuHidden = not HideUI.State.microMenuHidden
@@ -173,16 +173,16 @@ function HideUI.Core.ToggleMicroMenu()
         HideUI.Core.ToggleElementList(HideUI.Config.microMenuElements, HideUI.State.microMenuHidden, "microMenu")
     end
     
-    local status = HideUI.State.microMenuHidden and "masqués" or "affichés"
+    local status = HideUI.State.microMenuHidden and "hidden" or "shown"
     print("|cFF00FF00HideUI:|r Micro-menus " .. status)
 end
 
--- Basculer tout
+-- Toggle everything
 function HideUI.Core.ToggleAll()
     local state = HideUI.State
     
     if state.barsHidden or state.chatHidden or state.uiHidden or state.sideBarHidden or state.bagsHidden or state.microMenuHidden then
-        -- Si quelque chose est masqué, tout afficher
+        -- If something is hidden, show everything
         if state.barsHidden then HideUI.Core.ToggleActionBars() end
         if state.chatHidden then HideUI.Core.ToggleChat() end
         if state.uiHidden then HideUI.Core.ToggleUIElements() end
@@ -193,10 +193,10 @@ function HideUI.Core.ToggleAll()
             if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
                 HideUI.Core.ToggleElementList(HideUI.Config.sideActionBars, false, "sideBars")
             end
-            print("|cFF00FF00HideUI:|r Barres latérales affichées")
+            print("|cFF00FF00HideUI:|r Side bars shown")
         end
     else
-        -- Si tout est affiché, tout masquer
+        -- If everything is shown, hide everything
         HideUI.Core.ToggleActionBars()
         HideUI.Core.ToggleChat()
         HideUI.Core.ToggleUIElements()
@@ -206,11 +206,11 @@ function HideUI.Core.ToggleAll()
         if not state.combatOverrideActive and HideUI.Config and HideUI.Config.sideActionBars then
             HideUI.Core.ToggleElementList(HideUI.Config.sideActionBars, true, "sideBars")
         end
-        print("|cFF00FF00HideUI:|r Barres latérales masquées")
+        print("|cFF00FF00HideUI:|r Side bars hidden")
     end
 end
 
--- Tout afficher
+-- Show everything
 function HideUI.Core.ShowAll()
     local state = HideUI.State
     
@@ -219,35 +219,35 @@ function HideUI.Core.ShowAll()
     if state.uiHidden then HideUI.Core.ToggleUIElements() end
     if state.bagsHidden then HideUI.Core.ToggleBags() end
     if state.microMenuHidden then HideUI.Core.ToggleMicroMenu() end
-    print("|cFF00FF00HideUI:|r Interface restaurée")
+    print("|cFF00FF00HideUI:|r Interface restored")
 end
 
 -- ============================================================================
--- GESTION DES ÉVÉNEMENTS
+-- EVENT MANAGEMENT
 -- ============================================================================
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_LOGIN")
-frame:RegisterEvent("PLAYER_REGEN_DISABLED") -- Entrée en combat
-frame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- Sortie de combat
+frame:RegisterEvent("PLAYER_REGEN_DISABLED") -- Enter combat
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- Leave combat
 
 frame:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
         local loadedAddon = ...
         if loadedAddon == addonName then
-            print("|cFF00FF00Dynamic Immersive HUD|r v2.0 chargé avec succès !")
-            print("Utilisez |cFFFFFF00/hideui|r ou la touche |cFFFFFF00<|r pour basculer l'interface")
-            print("Utilisez la touche |cFFFFFF00B|r pour afficher temporairement les sacs")
-            print("|cFF32CD32Combat automatique:|r L'interface s'affiche en combat et disparaît après")
-            print("|cFF87CEEB Chat temporaire:|r Le chat s'affiche pour les messages importants")
-            print("|cFFFFB6C1Survol intelligent:|r Chat, barres, sacs, micro-menus et quêtes s'affichent au survol")
+            print("|cFF00FF00Dynamic Immersive HUD|r v2.0 loaded successfully!")
+            print("Use |cFFFFFF00/hideui|r or the |cFFFFFF00<|r key to toggle interface")
+            print("Use the |cFFFFFF00B|r key to show bags temporarily")
+            print("|cFF32CD32Automatic combat:|r Interface shows in combat and disappears after")
+            print("|cFF87CEEBTemporary chat:|r Chat shows for important messages")
+            print("|cFFFFB6C1Smart hover:|r Chat, bars, bags, micro-menus and quests show on hover")
         end
     elseif event == "PLAYER_LOGIN" then
-        -- Attendre que tous les modules soient chargés avant de sauvegarder les alphas
+        -- Wait for all modules to load before saving alphas
         C_Timer.After(1, function()
             HideUI.Core.SaveOriginalAlphas()
         end)
         
-        -- Initialiser les autres modules avec délai
+        -- Initialize other modules with delay
         C_Timer.After(2, function()
             if HideUI.Keybinds then HideUI.Keybinds.Setup() end
         end)
@@ -261,13 +261,13 @@ frame:SetScript("OnEvent", function(self, event, ...)
             if HideUI.Hover then HideUI.Hover.Initialize() end
         end)
     elseif event == "PLAYER_REGEN_DISABLED" then
-        -- Entrée en combat
+        -- Enter combat
         HideUI.State.inCombat = true
         if HideUI.Combat then
             HideUI.Combat.OnEnterCombat()
         end
     elseif event == "PLAYER_REGEN_ENABLED" then
-        -- Sortie de combat
+        -- Leave combat
         HideUI.State.inCombat = false
         if HideUI.Combat then
             HideUI.Combat.OnLeaveCombat()
@@ -276,7 +276,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
 end)
 
 -- ============================================================================
--- FONCTIONS GLOBALES POUR LES KEYBINDINGS
+-- GLOBAL FUNCTIONS FOR KEYBINDINGS
 -- ============================================================================
 function HideUI_ToggleAll() HideUI.Core.ToggleAll() end
 function HideUI_ToggleBars() HideUI.Core.ToggleActionBars() end
@@ -286,7 +286,7 @@ function HideUI_ShowBagsTemporary()
     if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive then
         HideUI.Bags.ShowTemporary()
     elseif not HideUI.State.bagsHidden then
-        -- Si les sacs ne sont pas masqués, comportement normal de la touche B
+        -- If bags are not hidden, normal behavior of B key
         if ToggleAllBags then
             ToggleAllBags()
         end

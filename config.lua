@@ -1,14 +1,14 @@
 -- Config.lua
--- Configuration des éléments d'interface à masquer
+-- Configuration of interface elements to hide
 
 HideUI = HideUI or {}
 HideUI.Config = {}
 
 -- ============================================================================
--- CONFIGURATION DES ÉLÉMENTS À MASQUER
+-- CONFIGURATION OF ELEMENTS TO HIDE
 -- ============================================================================
 
--- Barres d'action principales (bas de l'écran)
+-- Main action bars (bottom of screen)
 HideUI.Config.mainActionBars = {
     "ActionBarFrame", "MultiBarBottomLeft", "MultiBarBottomRight",
     "StanceBarFrame", "PetActionBarFrame",
@@ -16,12 +16,12 @@ HideUI.Config.mainActionBars = {
     "StanceButton6", "StanceButton7", "StanceButton8", "StanceButton9", "StanceButton10"
 }
 
--- Barres d'action latérales (côtés de l'écran)
+-- Side action bars (sides of screen)
 HideUI.Config.sideActionBars = {
     "MultiBarRight", "MultiBarLeft", "MultiBar5", "MultiBar6", "MultiBar7"
 }
 
--- Liste complète des barres d'action
+-- Complete action bars list
 HideUI.Config.actionBars = {}
 for _, bar in pairs(HideUI.Config.mainActionBars) do
     table.insert(HideUI.Config.actionBars, bar)
@@ -30,37 +30,37 @@ for _, bar in pairs(HideUI.Config.sideActionBars) do
     table.insert(HideUI.Config.actionBars, bar)
 end
 
--- Éléments d'interface principaux
+-- Main interface elements
 HideUI.Config.uiElements = {
-    -- Cadres de joueur et cible
+    -- Player and target frames
     "PlayerFrame", "TargetFrame",
-    -- Quêtes et objectifs
+    -- Quests and objectives
     "ObjectiveTrackerFrame", "QuestWatchFrame",
-    -- Barres principales et expérience
+    -- Main bars and experience
     "MainMenuBar", "StatusTrackingBarManager", "ExperienceBarFrame", "ReputationBarFrame",
-    -- Art de l'interface
+    -- Interface art
     "MainMenuBarArtFrame", "MainMenuBarArtFrameBackground",
     "MainMenuBarLeftEndCap", "MainMenuBarRightEndCap",
-    -- Boutons de navigation
+    -- Navigation buttons
     "ActionBarUpButton", "ActionBarDownButton", "MainMenuBarPageNumber",
-    -- Buffs et debuffs
+    -- Buffs and debuffs
     "BuffFrame", "DebuffFrame", "CastingBarFrame",
-    -- Micro menu et boutons sociaux
+    -- Micro menu and social buttons
     "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
     "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
     "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton",
     "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton",
     "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton",
     "SocialsMicroButton", "WorldMapMicroButton",
-    -- Postures et métamorphoses
+    -- Stances and shapeshifts
     "StanceBarLeft", "StanceBarMiddle", "StanceBarRight", "ShapeshiftBarFrame",
     "ShapeshiftButton1", "ShapeshiftButton2", "ShapeshiftButton3", "ShapeshiftButton4", "ShapeshiftButton5",
     "ShapeshiftButton6", "ShapeshiftButton7", "ShapeshiftButton8", "ShapeshiftButton9", "ShapeshiftButton10",
-    -- Éléments divers
+    -- Misc elements
     "KeyRingButton", "QuickJoinToastButton", "GameMenuFrame", "ChatFrameSocialTab"
 }
 
--- Éléments de sacs à masquer (séparés des autres éléments UI)
+-- Bag elements to hide (separate from other UI elements)
 HideUI.Config.bagElements = {
     "BagBarFrame", "MainMenuBarBackpackButton", "BackpackTokenFrame",
     "CharacterBag0Slot", "CharacterBag1Slot", "CharacterBag2Slot", "CharacterBag3Slot", "CharacterBag4Slot",
@@ -68,7 +68,7 @@ HideUI.Config.bagElements = {
     "ContainerFrameCombinedBags", "CombinedBagContainer"
 }
 
--- Éléments de chat à masquer
+-- Chat elements to hide
 HideUI.Config.chatElements = {
     "ChatFrameChannelButton", "ChatFrameToggleVoiceDeafenButton", "ChatFrameToggleVoiceMuteButton",
     "ChatFrame1EditBox", "ChatFrame1ButtonFrame", "GeneralDockManager", "ChatFrame1ResizeButton",
@@ -76,11 +76,21 @@ HideUI.Config.chatElements = {
     "ChatFrame1ButtonFrameDownButton", "ChatFrame1ButtonFrameBottomButton", "ChatFrame1ButtonFrameMinimizeButton"
 }
 
+-- Micro-menu elements
+HideUI.Config.microMenuElements = {
+    "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
+    "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
+    "AchievementMicroButton", "QuestLogMicroButton", "GuildMicroButton",
+    "LFDMicroButton", "CollectionsMicroButton", "EJMicroButton",
+    "StoreMicroButton", "MainMenuMicroButton", "HelpMicroButton",
+    "SocialsMicroButton", "WorldMapMicroButton"
+}
+
 -- ============================================================================
--- CONFIGURATION DU SURVOL
+-- HOVER CONFIGURATION
 -- ============================================================================
 
--- Zones de survol pour différents éléments
+-- Hover zones for different elements
 HideUI.Config.hoverZones = {
     chat = {
         region = {left = 0, right = 450, bottom = 0, top = 350},
@@ -88,51 +98,56 @@ HideUI.Config.hoverZones = {
         delay = 3
     },
     mainBars = {
-        region = {left = 500, right = 0, bottom = 0, top = 120}, -- right sera calculé dynamiquement
+        region = {left = 500, right = 0, bottom = 0, top = 120}, -- right will be calculated dynamically
         elements = "mainBars",
         delay = 2
     },
     sideBars = {
-        region = {left = 0, right = 0, bottom = 120, top = 0}, -- calculé dynamiquement
+        region = {left = 0, right = 0, bottom = 120, top = 0}, -- calculated dynamically
         elements = "sideBars",
         delay = 2
     },
     objectives = {
-        region = {left = 0, right = 0, bottom = 150, top = 0}, -- calculé dynamiquement
+        region = {left = 0, right = 0, bottom = 150, top = 0}, -- calculated dynamically
         elements = "objectives",
         delay = 3
     },
     bags = {
-        region = {left = 0, right = 0, bottom = 0, top = 100}, -- calculé dynamiquement
+        region = {left = 0, right = 0, bottom = 0, top = 100}, -- calculated dynamically
         elements = "bags",
+        delay = 2
+    },
+    microMenu = {
+        region = {left = 0, right = 0, bottom = 0, top = 100}, -- calculated dynamically
+        elements = "microMenu",
         delay = 2
     }
 }
 
 -- ============================================================================
--- CONFIGURATION DU CHAT TEMPORAIRE
+-- TEMPORARY CHAT CONFIGURATION
 -- ============================================================================
 
--- Types de messages à afficher temporairement
+-- Message types to show temporarily
 HideUI.Config.importantChatTypes = {
-    ["CHAT_MSG_WHISPER"] = true,           -- Messages privés reçus
-    ["CHAT_MSG_WHISPER_INFORM"] = true,    -- Messages privés envoyés
-    ["CHAT_MSG_PARTY"] = true,             -- Messages de groupe
-    ["CHAT_MSG_PARTY_LEADER"] = true,      -- Messages du chef de groupe
-    ["CHAT_MSG_RAID"] = true,              -- Messages de raid
-    ["CHAT_MSG_RAID_LEADER"] = true,       -- Messages du chef de raid
-    ["CHAT_MSG_RAID_WARNING"] = true,      -- Avertissements de raid
-    ["CHAT_MSG_GUILD"] = true,             -- Messages de guilde
-    ["CHAT_MSG_OFFICER"] = true,           -- Messages d'officier
-    ["CHAT_MSG_INSTANCE_CHAT"] = true,     -- Messages d'instance
-    ["CHAT_MSG_INSTANCE_CHAT_LEADER"] = true -- Messages du chef d'instance
+    ["CHAT_MSG_WHISPER"] = true,           -- Received whispers
+    ["CHAT_MSG_WHISPER_INFORM"] = true,    -- Sent whispers
+    ["CHAT_MSG_PARTY"] = true,             -- Party messages
+    ["CHAT_MSG_PARTY_LEADER"] = true,      -- Party leader messages
+    ["CHAT_MSG_RAID"] = true,              -- Raid messages
+    ["CHAT_MSG_RAID_LEADER"] = true,       -- Raid leader messages
+    ["CHAT_MSG_RAID_WARNING"] = true,      -- Raid warnings
+    ["CHAT_MSG_GUILD"] = true,             -- Guild messages
+    ["CHAT_MSG_OFFICER"] = true,           -- Officer messages
+    ["CHAT_MSG_INSTANCE_CHAT"] = true,     -- Instance messages
+    ["CHAT_MSG_INSTANCE_CHAT_LEADER"] = true -- Instance leader messages
 }
 
 -- ============================================================================
--- CONFIGURATION DEBUG
+-- DEBUG CONFIGURATION
 -- ============================================================================
 
--- Éléments à vérifier dans le debug
+-- Elements to check in debug
 HideUI.Config.debugFrames = {
     "MicroButtonAndBagsBar", "MicroMenuContainer", "MicroButtonFrame",
     "CharacterMicroButton", "SpellbookMicroButton", "TalentMicroButton",
@@ -147,28 +162,33 @@ HideUI.Config.debugFrames = {
 }
 
 -- ============================================================================
--- FONCTIONS UTILITAIRES DE CONFIGURATION
+-- CONFIGURATION UTILITY FUNCTIONS
 -- ============================================================================
 
--- Met à jour les zones de survol dynamiquement
+-- Update hover zones dynamically
 function HideUI.Config.UpdateHoverZones()
     local screenWidth = UIParent:GetWidth()
     local screenHeight = UIParent:GetHeight()
     
-    -- Zone des barres principales
+    -- Main bars zone
     HideUI.Config.hoverZones.mainBars.region.right = screenWidth
     
-    -- Zone des barres latérales
+    -- Side bars zone
     HideUI.Config.hoverZones.sideBars.region.left = screenWidth - 150
     HideUI.Config.hoverZones.sideBars.region.right = screenWidth
     HideUI.Config.hoverZones.sideBars.region.top = screenHeight - 200
     
-    -- Zone des objectifs
+    -- Objectives zone
     HideUI.Config.hoverZones.objectives.region.left = screenWidth - 400
     HideUI.Config.hoverZones.objectives.region.right = screenWidth - 150
     HideUI.Config.hoverZones.objectives.region.top = screenHeight - 100
     
-    -- Zone des sacs
+    -- Bags zone
     HideUI.Config.hoverZones.bags.region.left = screenWidth - 200
     HideUI.Config.hoverZones.bags.region.right = screenWidth
+    
+    -- Micro-menu zone
+    HideUI.Config.hoverZones.microMenu.region.left = screenWidth - 250
+    HideUI.Config.hoverZones.microMenu.region.right = screenWidth
+    HideUI.Config.hoverZones.microMenu.region.top = 150
 end

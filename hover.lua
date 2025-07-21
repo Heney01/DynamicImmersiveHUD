@@ -1,23 +1,23 @@
 -- Hover.lua
--- Module de gestion du survol intelligent
+-- Smart hover management module
 
 HideUI = HideUI or {}
 HideUI.Hover = {}
 
--- Variables locales
+-- Local variables
 local hoverTimers = {}
 local hoverActiveElements = {}
 local mouseCheckTimer = nil
 
 -- ============================================================================
--- FONCTIONS PRINCIPALES
+-- MAIN FUNCTIONS
 -- ============================================================================
 
--- Affiche temporairement un groupe d'éléments
+-- Temporarily show a group of elements
 function HideUI.Hover.ShowElementsOnHover(elementType)
     if HideUI.State.combatOverrideActive then return end
     
-    -- Annuler le timer précédent pour ce type
+    -- Cancel previous timer for this type
     if hoverTimers[elementType] then
         hoverTimers[elementType]:Cancel()
         hoverTimers[elementType] = nil
@@ -31,7 +31,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
         end
         
     elseif elementType == "mainBars" and HideUI.State.barsHidden then
-        -- Afficher les barres principales (bas)
+        -- Show main bars (bottom)
         for _, barName in pairs(HideUI.Config.mainActionBars) do
             local bar = _G[barName]
             if bar then
@@ -42,7 +42,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
             end
         end
         
-        -- Afficher aussi les éléments de la barre principale
+        -- Also show main bar elements
         local mainBarElements = {
             "MainMenuBar", "MainMenuBarArtFrame", "MainMenuBarArtFrameBackground",
             "MainMenuBarLeftEndCap", "MainMenuBarRightEndCap", "ActionBarUpButton", 
@@ -60,7 +60,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
         end
         
     elseif elementType == "sideBars" and HideUI.State.sideBarHidden then
-        -- Afficher les barres latérales uniquement
+        -- Show side bars only
         for _, barName in pairs(HideUI.Config.sideActionBars) do
             local bar = _G[barName]
             if bar then
@@ -72,7 +72,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
         end
         
     elseif elementType == "objectives" and HideUI.State.uiHidden then
-        -- Afficher les objectifs/quêtes
+        -- Show objectives/quests
         local objectiveElements = {"ObjectiveTrackerFrame", "QuestWatchFrame", "QuestMapFrame"}
         for _, elementName in pairs(objectiveElements) do
             local element = _G[elementName]
@@ -90,7 +90,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
         end
         
     elseif elementType == "microMenu" and HideUI.State.microMenuHidden then
-        -- Afficher les micro-menus
+        -- Show micro-menus
         for _, elementName in pairs(HideUI.Config.microMenuElements) do
             local element = _G[elementName]
             if element then
@@ -103,7 +103,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
     end
 end
 
--- Masque les éléments après le délai
+-- Hide elements after delay
 function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
     hoverTimers[elementType] = C_Timer.NewTimer(delay, function()
         if not hoverActiveElements[elementType] then return end
@@ -116,7 +116,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
             end
             
         elseif elementType == "mainBars" and HideUI.State.barsHidden and not HideUI.State.combatOverrideActive then
-            -- Fondu des barres principales avec éléments associés
+            -- Fade main bars with associated elements
             for _, barName in pairs(HideUI.Config.mainActionBars) do
                 local bar = _G[barName]
                 if bar then
@@ -127,7 +127,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
                 end
             end
             
-            -- Masquer aussi les éléments de la barre principale
+            -- Also hide main bar elements
             local mainBarElements = {
                 "MainMenuBar", "MainMenuBarArtFrame", "MainMenuBarArtFrameBackground",
                 "MainMenuBarLeftEndCap", "MainMenuBarRightEndCap", "ActionBarUpButton", 
@@ -145,7 +145,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
             end
             
         elseif elementType == "sideBars" and HideUI.State.sideBarHidden and not HideUI.State.combatOverrideActive then
-            -- Fondu des barres latérales
+            -- Fade side bars
             for _, barName in pairs(HideUI.Config.sideActionBars) do
                 local bar = _G[barName]
                 if bar then
@@ -157,7 +157,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
             end
             
         elseif elementType == "objectives" and HideUI.State.uiHidden and not HideUI.State.combatOverrideActive then
-            -- Fondu des objectifs
+            -- Fade objectives
             local objectiveElements = {"ObjectiveTrackerFrame", "QuestWatchFrame", "QuestMapFrame"}
             for _, elementName in pairs(objectiveElements) do
                 local element = _G[elementName]
@@ -175,7 +175,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
             end
             
         elseif elementType == "microMenu" and HideUI.State.microMenuHidden and not HideUI.State.combatOverrideActive then
-            -- Fondu des micro-menus
+            -- Fade micro-menus
             for _, elementName in pairs(HideUI.Config.microMenuElements) do
                 local element = _G[elementName]
                 if element then
@@ -191,7 +191,7 @@ function HideUI.Hover.HideElementsAfterDelay(elementType, delay)
     end)
 end
 
--- Détecte si la souris est dans une zone
+-- Detect if mouse is in a region
 function HideUI.Hover.IsMouseInRegion(region)
     local mouseX, mouseY = GetCursorPosition()
     local scale = UIParent:GetEffectiveScale()
@@ -203,12 +203,12 @@ function HideUI.Hover.IsMouseInRegion(region)
 end
 
 -- ============================================================================
--- INITIALISATION ET TIMER
+-- INITIALIZATION AND TIMER
 -- ============================================================================
 
--- Initialise le système de survol
+-- Initialize hover system
 function HideUI.Hover.Initialize()
-    -- Timer pour vérifier la position de la souris
+    -- Timer to check mouse position
     mouseCheckTimer = C_Timer.NewTicker(0.15, function()
         local state = HideUI.State
         
@@ -217,7 +217,7 @@ function HideUI.Hover.Initialize()
             return
         end
         
-        -- Mettre à jour les zones de survol dynamiquement
+        -- Update hover zones dynamically
         if HideUI.Config then
             HideUI.Config.UpdateHoverZones()
         end
@@ -228,15 +228,15 @@ function HideUI.Hover.Initialize()
             if isInZone then
                 if not hoverActiveElements[zoneData.elements] then
                     HideUI.Hover.ShowElementsOnHover(zoneData.elements)
-                    print("|cFFFFB6C1HideUI:|r " .. zoneData.elements .. " affiché au survol")
+                    print("|cFFFFB6C1HideUI:|r " .. zoneData.elements .. " shown on hover")
                 end
-                -- Annuler le timer de masquage si on survole encore
+                -- Cancel hide timer if still hovering
                 if hoverTimers[zoneData.elements] then
                     hoverTimers[zoneData.elements]:Cancel()
                     hoverTimers[zoneData.elements] = nil
                 end
             else
-                -- Si on quitte la zone et que l'élément est actif, programmer le masquage
+                -- If leaving zone and element is active, schedule hiding
                 if hoverActiveElements[zoneData.elements] and not hoverTimers[zoneData.elements] then
                     HideUI.Hover.HideElementsAfterDelay(zoneData.elements, zoneData.delay)
                 end
@@ -246,15 +246,15 @@ function HideUI.Hover.Initialize()
 end
 
 -- ============================================================================
--- FONCTIONS UTILITAIRES
+-- UTILITY FUNCTIONS
 -- ============================================================================
 
--- Vérifie si un élément est actif au survol
+-- Check if element is active on hover
 function HideUI.Hover.IsElementActive(elementType)
     return hoverActiveElements[elementType] or false
 end
 
--- Annule tous les timers de survol
+-- Cancel all hover timers
 function HideUI.Hover.CancelAllTimers()
     for elementType, timer in pairs(hoverTimers) do
         if timer then
@@ -265,7 +265,7 @@ function HideUI.Hover.CancelAllTimers()
     hoverActiveElements = {}
 end
 
--- Arrête le système de survol
+-- Stop hover system
 function HideUI.Hover.Stop()
     if mouseCheckTimer then
         mouseCheckTimer:Cancel()

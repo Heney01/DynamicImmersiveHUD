@@ -1,20 +1,20 @@
 -- Chat.lua
--- Module de gestion du chat
+-- Chat management module
 
 HideUI = HideUI or {}
 HideUI.Chat = {}
 
--- Variables locales
+-- Local variables
 local chatTemporaryActive = false
 local chatTimer = nil
 
 -- ============================================================================
--- FONCTIONS PRINCIPALES
+-- MAIN FUNCTIONS
 -- ============================================================================
 
--- Applique le basculement du chat
+-- Apply chat toggle
 function HideUI.Chat.ApplyToggle(isHidden)
-    -- Annuler le chat temporaire si actif
+    -- Cancel temporary chat if active
     if chatTemporaryActive then
         chatTemporaryActive = false
         if chatTimer then
@@ -22,9 +22,9 @@ function HideUI.Chat.ApplyToggle(isHidden)
         end
     end
     
-    -- Si en combat, ne pas appliquer immédiatement
+    -- If in combat, don't apply immediately
     if not HideUI.State.combatOverrideActive then
-        -- Fenêtres de chat principales
+        -- Main chat windows
         for i = 1, NUM_CHAT_WINDOWS do
             local chatFrame = _G["ChatFrame"..i]
             if chatFrame then
@@ -37,32 +37,32 @@ function HideUI.Chat.ApplyToggle(isHidden)
                 end
             end
             
-            -- Onglets de chat
+            -- Chat tabs
             local chatTab = _G["ChatFrame"..i.."Tab"]
             if chatTab then
                 chatTab:SetAlpha(isHidden and 0 or 1)
             end
         end
         
-        -- Éléments additionnels du chat
+        -- Additional chat elements
         if HideUI.Core then
             HideUI.Core.ToggleElementList(HideUI.Config.chatElements, isHidden, "chat")
         end
     end
 end
 
--- Affiche temporairement le chat
+-- Show chat temporarily
 function HideUI.Chat.ShowTemporary()
     if not HideUI.State.chatHidden then return end
     
     chatTemporaryActive = true
     
-    -- Annuler le timer précédent s'il existe
+    -- Cancel previous timer if exists
     if chatTimer then
         chatTimer:Cancel()
     end
     
-    -- Afficher le chat immédiatement
+    -- Show chat immediately
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame"..i]
         if chatFrame then
@@ -85,16 +85,16 @@ function HideUI.Chat.ShowTemporary()
         end
     end
     
-    -- Programmer le masquage automatique dans 8 secondes
+    -- Schedule automatic hiding in 8 seconds
     chatTimer = C_Timer.NewTimer(8, function()
         HideUI.Chat.HideAfterDelay()
     end)
 end
 
--- Masque le chat après le délai
+-- Hide chat after delay
 function HideUI.Chat.HideAfterDelay()
     if chatTemporaryActive and HideUI.State.chatHidden and not HideUI.State.combatOverrideActive then
-        -- Fondu rapide du chat
+        -- Quick chat fade
         local fadeSteps = 8
         local currentStep = 0
         
@@ -108,7 +108,7 @@ function HideUI.Chat.HideAfterDelay()
                 timer:Cancel()
             end
             
-            -- Appliquer le fondu au chat
+            -- Apply fade to chat
             for i = 1, NUM_CHAT_WINDOWS do
                 local chatFrame = _G["ChatFrame"..i]
                 if chatFrame then
@@ -140,11 +140,11 @@ function HideUI.Chat.HideAfterDelay()
     end
 end
 
--- Affiche le chat au survol
+-- Show chat on hover
 function HideUI.Chat.ShowOnHover()
     if not HideUI.State.chatHidden or HideUI.State.combatOverrideActive then return end
     
-    -- Afficher le chat
+    -- Show chat
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame"..i]
         if chatFrame then
@@ -168,11 +168,11 @@ function HideUI.Chat.ShowOnHover()
     end
 end
 
--- Masque le chat après le survol
+-- Hide chat after hover
 function HideUI.Chat.HideAfterHover()
     if not HideUI.State.chatHidden or chatTemporaryActive or HideUI.State.combatOverrideActive then return end
     
-    -- Fondu du chat
+    -- Chat fade
     local fadeSteps = 6
     local currentStep = 0
     
@@ -212,10 +212,10 @@ function HideUI.Chat.HideAfterHover()
 end
 
 -- ============================================================================
--- GESTION DES ÉVÉNEMENTS DE CHAT
+-- CHAT EVENT MANAGEMENT
 -- ============================================================================
 
--- Gestionnaire d'événements de chat
+-- Chat event handler
 function HideUI.Chat.OnChatMessage(event, message, sender, ...)
     if HideUI.Config.importantChatTypes[event] then
         HideUI.Chat.ShowTemporary()
@@ -223,21 +223,21 @@ function HideUI.Chat.OnChatMessage(event, message, sender, ...)
 end
 
 -- ============================================================================
--- HOOKS DES FONCTIONS DE CHAT
+-- CHAT FUNCTION HOOKS
 -- ============================================================================
 
 function HideUI.Chat.SetupHooks()
-    -- Hook de la fonction d'envoi de messages
+    -- Hook message sending function
     local originalSendChatMessage = SendChatMessage
     SendChatMessage = function(msg, chatType, ...)
         if msg and msg:trim() ~= "" then
-            -- Message envoyé, afficher le chat temporairement
+            -- Message sent, show chat temporarily
             HideUI.Chat.ShowTemporary()
         end
         return originalSendChatMessage(msg, chatType, ...)
     end
     
-    -- Enregistrer les événements de chat importants
+    -- Register important chat events
     local frame = CreateFrame("Frame")
     for eventType, _ in pairs(HideUI.Config.importantChatTypes) do
         frame:RegisterEvent(eventType)
@@ -249,15 +249,15 @@ function HideUI.Chat.SetupHooks()
 end
 
 -- ============================================================================
--- FONCTIONS D'ÉTAT
+-- STATE FUNCTIONS
 -- ============================================================================
 
--- Vérifie si l'affichage temporaire est actif
+-- Check if temporary display is active
 function HideUI.Chat.IsTemporaryActive()
     return chatTemporaryActive
 end
 
--- Annule l'affichage temporaire
+-- Cancel temporary display
 function HideUI.Chat.CancelTemporary()
     if chatTemporaryActive then
         chatTemporaryActive = false

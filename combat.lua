@@ -1,25 +1,25 @@
 -- Combat.lua
--- Module de gestion du combat et du fondu
+-- Combat and fade management module
 
 HideUI = HideUI or {}
 HideUI.Combat = {}
 
--- Variables locales
+-- Local variables
 local fadeTimer = nil
 
 -- ============================================================================
--- FONCTIONS PRINCIPALES
+-- MAIN FUNCTIONS
 -- ============================================================================
 
--- Applique un niveau d'alpha à tous les éléments
+-- Apply alpha level to all elements
 function HideUI.Combat.ApplyFadeToAllElements(alpha)
-    -- Vérifier que la configuration est disponible
+    -- Check that configuration is available
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration non chargée, impossible d'appliquer le fondu")
+        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, unable to apply fade")
         return
     end
     
-    -- Barres d'action
+    -- Action bars
     if HideUI.Config.actionBars then
         for _, barName in pairs(HideUI.Config.actionBars) do
             local bar = _G[barName]
@@ -29,7 +29,7 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
         end
     end
     
-    -- Éléments d'UI
+    -- UI elements
     if HideUI.Config.uiElements then
         for _, elementName in pairs(HideUI.Config.uiElements) do
             local element = _G[elementName]
@@ -39,7 +39,7 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
         end
     end
     
-    -- Éléments de sacs
+    -- Bag elements
     if HideUI.Config.bagElements then
         for _, elementName in pairs(HideUI.Config.bagElements) do
             local element = _G[elementName]
@@ -80,7 +80,7 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
         end
     end
     
-    -- Fenêtres de sacs
+    -- Bag windows
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
         if containerFrame then
@@ -89,7 +89,7 @@ function HideUI.Combat.ApplyFadeToAllElements(alpha)
     end
 end
 
--- Applique l'état masqué complet
+-- Apply complete hidden state
 function HideUI.Combat.ApplyHiddenState()
     local state = HideUI.State
     
@@ -114,7 +114,7 @@ function HideUI.Combat.ApplyHiddenState()
     end
 end
 
--- Affiche immédiatement l'interface en combat
+-- Immediately show interface for combat
 function HideUI.Combat.ShowUIForCombat()
     HideUI.State.combatOverrideActive = true
     
@@ -122,16 +122,16 @@ function HideUI.Combat.ShowUIForCombat()
         fadeTimer:Cancel()
     end
     
-    -- Affichage immédiat avec alpha = 1
+    -- Immediate display with alpha = 1
     HideUI.Combat.ApplyFadeToAllElements(1)
     
-    -- Vérifier que la configuration est disponible avant de réactiver les interactions
+    -- Check that configuration is available before reactivating interactions
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration non chargée, interactions souris non restaurées")
+        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, mouse interactions not restored")
         return
     end
     
-    -- Réactiver les interactions souris
+    -- Reactivate mouse interactions
     if HideUI.Config.actionBars then
         for _, barName in pairs(HideUI.Config.actionBars) do
             local bar = _G[barName]
@@ -159,7 +159,7 @@ function HideUI.Combat.ShowUIForCombat()
         end
     end
     
-    -- Réactiver les micro-menus
+    -- Reactivate micro-menus
     if HideUI.Config.microMenuElements then
         for _, elementName in pairs(HideUI.Config.microMenuElements) do
             local element = _G[elementName]
@@ -169,7 +169,7 @@ function HideUI.Combat.ShowUIForCombat()
         end
     end
     
-    -- Réactiver le chat
+    -- Reactivate chat
     for i = 1, NUM_CHAT_WINDOWS do
         local chatFrame = _G["ChatFrame"..i]
         if chatFrame and chatFrame.EnableMouse then
@@ -186,7 +186,7 @@ function HideUI.Combat.ShowUIForCombat()
         end
     end
     
-    -- Réactiver les fenêtres de sacs
+    -- Reactivate bag windows
     for i = 1, 13 do
         local containerFrame = _G["ContainerFrame"..i]
         if containerFrame and containerFrame.EnableMouse then
@@ -195,11 +195,11 @@ function HideUI.Combat.ShowUIForCombat()
     end
 end
 
--- Fonction de fondu progressif
+-- Progressive fade function
 function HideUI.Combat.FadeOutUI()
-    -- Vérifier que la configuration est chargée
+    -- Check that configuration is loaded
     if not HideUI.Config then
-        print("|cFFFF0000HideUI Combat:|r Configuration non chargée, fondu annulé")
+        print("|cFFFF0000HideUI Combat:|r Configuration not loaded, fade canceled")
         return
     end
     
@@ -207,10 +207,10 @@ function HideUI.Combat.FadeOutUI()
         fadeTimer:Cancel()
     end
     
-    -- Délai réduit à 1 seconde après la fin du combat
+    -- Reduced delay to 1 second after combat ends
     fadeTimer = C_Timer.NewTimer(1, function()
         if not HideUI.State.inCombat and HideUI.State.combatOverrideActive then
-            -- Fondu progressif plus rapide sur 0.8 secondes
+            -- Faster progressive fade over 0.8 seconds
             local fadeSteps = 10
             local currentStep = 0
             
@@ -221,15 +221,15 @@ function HideUI.Combat.FadeOutUI()
                 if alpha <= 0 then
                     alpha = 0
                     HideUI.State.combatOverrideActive = false
-                    -- Restaurer l'état masqué complet
+                    -- Restore complete hidden state
                     local state = HideUI.State
                     if state.barsHidden or state.chatHidden or state.uiHidden or state.bagsHidden or state.microMenuHidden then
                         HideUI.Combat.ApplyHiddenState()
                     end
-                    -- Annuler le timer à la fin
+                    -- Cancel timer at end
                     timer:Cancel()
                 else
-                    -- Appliquer le fondu à tous les éléments
+                    -- Apply fade to all elements
                     HideUI.Combat.ApplyFadeToAllElements(alpha)
                 end
                 
@@ -242,23 +242,23 @@ function HideUI.Combat.FadeOutUI()
 end
 
 -- ============================================================================
--- GESTIONNAIRES D'ÉVÉNEMENTS
+-- EVENT HANDLERS
 -- ============================================================================
 
--- Gestionnaire d'entrée en combat
+-- Enter combat handler
 function HideUI.Combat.OnEnterCombat()
     local state = HideUI.State
     
     if state.barsHidden or state.chatHidden or state.uiHidden or state.bagsHidden then
         HideUI.Combat.ShowUIForCombat()
-        print("|cFFFF6600HideUI:|r Interface affichée pour le combat")
+        print("|cFFFF6600HideUI:|r Interface shown for combat")
     end
 end
 
--- Gestionnaire de sortie de combat
+-- Leave combat handler
 function HideUI.Combat.OnLeaveCombat()
     if HideUI.State.combatOverrideActive then
-        print("|cFF32CD32HideUI:|r Combat terminé - fondu dans 1 seconde...")
+        print("|cFF32CD32HideUI:|r Combat ended - fading in 1 second...")
         HideUI.Combat.FadeOutUI()
     end
 end

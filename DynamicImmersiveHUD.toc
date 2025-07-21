@@ -1,11 +1,11 @@
 ## Interface: 110002
 ## Title: Dynamic Immersive HUD
-## Notes: Interface dynamique et immersive - Masquage intelligent selon le contexte
-## Author: VotreNom
+## Notes: Dynamic and immersive interface - Smart hiding based on context
+## Author: YourName
 ## Version: 2.0
 ## SavedVariables: DynamicImmersiveHUDDB
 
-# Ordre de chargement important
+# Important loading order
 Config.lua
 Core.lua
 Chat.lua
