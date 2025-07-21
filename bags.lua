@@ -10,8 +10,6 @@ local bagTimer = nil
 local originalToggleBag = nil
 local originalToggleAllBags = nil
 local originalToggleBackpack = nil
-local merchantActive = false
-local merchantFrame = nil
 
 -- ============================================================================
 -- MAIN FUNCTIONS
@@ -19,6 +17,19 @@ local merchantFrame = nil
 
 -- Show bags temporarily
 function HideUI.Bags.ShowTemporary()
+    -- Vérifier que le système est prêt
+    if not HideUI.State then
+        return
+    end
+    
+    -- Si l'addon est désactivé, utiliser le comportement normal
+    if not HideUI.State.addonEnabled then
+        if ToggleAllBags then
+            ToggleAllBags()
+        end
+        return
+    end
+    
     if not HideUI.State.bagsHidden then 
         -- If bags are not hidden, use normal behavior
         if ToggleAllBags then
@@ -59,12 +70,14 @@ function HideUI.Bags.ShowTemporary()
     end
     
     -- Show bag elements first
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(1)
-            if element.EnableMouse then
-                element:EnableMouse(true)
+    if HideUI.Config and HideUI.Config.bagElements then
+        for _, elementName in pairs(HideUI.Config.bagElements) do
+            local element = _G[elementName]
+            if element then
+                element:SetAlpha(1)
+                if element.EnableMouse then
+                    element:EnableMouse(true)
+                end
             end
         end
     end
@@ -111,15 +124,10 @@ end
 
 -- Hide bags after delay
 function HideUI.Bags.HideAfterDelay()
-    if not HideUI.State.bagsHidden then 
+    if not HideUI.State or not HideUI.State.bagsHidden then 
         return
     end
-    
-    -- Don't hide if at merchant
-    if merchantActive then
-        return
-    end
-    
+   
     -- Don't hide in combat
     if HideUI.State.combatOverrideActive then
         return
@@ -129,12 +137,14 @@ function HideUI.Bags.HideAfterDelay()
     bagTemporaryActive = false
     
     -- Instant hiding (no fade)
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(0)
-            if element.EnableMouse then
-                element:EnableMouse(false)
+    if HideUI.Config and HideUI.Config.bagElements then
+        for _, elementName in pairs(HideUI.Config.bagElements) do
+            local element = _G[elementName]
+            if element then
+                element:SetAlpha(0)
+                if element.EnableMouse then
+                    element:EnableMouse(false)
+                end
             end
         end
     end
@@ -161,7 +171,7 @@ function HideUI.Bags.ApplyToggle(isHidden)
     
     -- If in combat, don't apply immediately
     if not HideUI.State.combatOverrideActive then
-        if HideUI.Core then
+        if HideUI.Core and HideUI.Config and HideUI.Config.bagElements then
             HideUI.Core.ToggleElementList(HideUI.Config.bagElements, isHidden, "bags")
         end
         
@@ -191,15 +201,19 @@ end
 
 -- Show bags on hover
 function HideUI.Bags.ShowOnHover()
-    if not HideUI.State.bagsHidden or HideUI.State.combatOverrideActive then return end
+    if not HideUI.State or not HideUI.State.bagsHidden or HideUI.State.combatOverrideActive then 
+        return 
+    end
     
     -- Instant display of bag elements
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(1)
-            if element.EnableMouse then
-                element:EnableMouse(true)
+    if HideUI.Config and HideUI.Config.bagElements then
+        for _, elementName in pairs(HideUI.Config.bagElements) do
+            local element = _G[elementName]
+            if element then
+                element:SetAlpha(1)
+                if element.EnableMouse then
+                    element:EnableMouse(true)
+                end
             end
         end
     end
@@ -207,17 +221,19 @@ end
 
 -- Hide bags after hover
 function HideUI.Bags.HideAfterHover()
-    if not HideUI.State.bagsHidden or bagTemporaryActive or HideUI.State.combatOverrideActive or merchantActive then 
+    if not HideUI.State or not HideUI.State.bagsHidden or bagTemporaryActive or HideUI.State.combatOverrideActive then 
         return 
     end
     
     -- Instant bag hiding
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(0)
-            if element.EnableMouse then
-                element:EnableMouse(false)
+    if HideUI.Config and HideUI.Config.bagElements then
+        for _, elementName in pairs(HideUI.Config.bagElements) do
+            local element = _G[elementName]
+            if element then
+                element:SetAlpha(0)
+                if element.EnableMouse then
+                    element:EnableMouse(false)
+                end
             end
         end
     end
@@ -232,7 +248,7 @@ function HideUI.Bags.SetupHooks()
     if ToggleBag and not originalToggleBag then
         originalToggleBag = ToggleBag
         ToggleBag = function(bagID)
-            if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
+            if HideUI.State and HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive then
                 HideUI.Bags.ShowTemporary()
                 -- Don't call original function here as ShowTemporary handles it
                 return
@@ -245,7 +261,7 @@ function HideUI.Bags.SetupHooks()
     if ToggleAllBags and not originalToggleAllBags then
         originalToggleAllBags = ToggleAllBags
         ToggleAllBags = function()
-            if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
+            if HideUI.State and HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive then
                 HideUI.Bags.ShowTemporary()
                 -- Don't call original function here as ShowTemporary handles it
                 return
@@ -258,7 +274,7 @@ function HideUI.Bags.SetupHooks()
     if ToggleBackpack and not originalToggleBackpack then
         originalToggleBackpack = ToggleBackpack
         ToggleBackpack = function()
-            if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
+            if HideUI.State and HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive then
                 HideUI.Bags.ShowTemporary()
                 -- Don't call original function here as ShowTemporary handles it
                 return
@@ -272,7 +288,7 @@ function HideUI.Bags.SetupHooks()
         local bagButton = _G["CharacterBag"..i.."Slot"]
         if bagButton and not bagButton.hideUIHooked then
             bagButton:HookScript("OnClick", function()
-                if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
+                if HideUI.State and HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive  then
                     HideUI.Bags.ShowTemporary()
                 end
             end)
@@ -284,27 +300,13 @@ function HideUI.Bags.SetupHooks()
     local backpackButton = _G["MainMenuBarBackpackButton"]
     if backpackButton and not backpackButton.hideUIHooked then
         backpackButton:HookScript("OnClick", function()
-            if HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive and not merchantActive then
+            if HideUI.State and HideUI.State.bagsHidden and not HideUI.State.combatOverrideActive and not bagTemporaryActive then
                 HideUI.Bags.ShowTemporary()
             end
         end)
         backpackButton.hideUIHooked = true
     end
-    
-    -- Create frame to listen for merchant events
-    if not merchantFrame then
-        merchantFrame = CreateFrame("Frame")
-        merchantFrame:RegisterEvent("MERCHANT_SHOW")
-        merchantFrame:RegisterEvent("MERCHANT_CLOSED")
-        
-        merchantFrame:SetScript("OnEvent", function(self, event, ...)            
-            if event == "MERCHANT_SHOW" then
-                HideUI.Bags.ShowForMerchant()
-            elseif event == "MERCHANT_CLOSED" then
-                HideUI.Bags.HideAfterMerchant()
-            end
-        end)
-    end
+
 end
 
 -- ============================================================================
@@ -329,23 +331,22 @@ end
 
 -- Force immediate bag hiding
 function HideUI.Bags.ForceHide()
-    if not HideUI.State.bagsHidden then return end
-    
-    -- Don't hide if at merchant
-    if merchantActive then
-        return
+    if not HideUI.State or not HideUI.State.bagsHidden then 
+        return 
     end
     
     -- Disable temporary mode
     HideUI.Bags.CancelTemporary()
     
     -- Immediately hide bag elements
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(0)
-            if element.EnableMouse then
-                element:EnableMouse(false)
+    if HideUI.Config and HideUI.Config.bagElements then
+        for _, elementName in pairs(HideUI.Config.bagElements) do
+            local element = _G[elementName]
+            if element then
+                element:SetAlpha(0)
+                if element.EnableMouse then
+                    element:EnableMouse(false)
+                end
             end
         end
     end
@@ -358,105 +359,4 @@ function HideUI.Bags.ForceHide()
             containerFrame:EnableMouse(false)
         end
     end
-end
-
--- ============================================================================
--- MERCHANT MANAGEMENT
--- ============================================================================
-
--- Show bags when talking to merchant
-function HideUI.Bags.ShowForMerchant()
-    if not HideUI.State.bagsHidden then return end
-        
-    merchantActive = true
-    
-    -- Cancel ALL timers and modes in progress
-    if bagTimer then
-        bagTimer:Cancel()
-        bagTimer = nil
-    end
-    
-    -- Force disable temporary mode
-    if bagTemporaryActive then
-        bagTemporaryActive = false
-    end
-    
-    -- Show bag elements
-    for _, elementName in pairs(HideUI.Config.bagElements) do
-        local element = _G[elementName]
-        if element then
-            element:SetAlpha(1)
-            if element.EnableMouse then
-                element:EnableMouse(true)
-            end
-        end
-    end
-    
-    -- Automatically open bags if not already open
-    local numBagsOpen = 0
-    for i = 1, 13 do
-        local containerFrame = _G["ContainerFrame"..i]
-        if containerFrame and containerFrame:IsShown() then
-            numBagsOpen = numBagsOpen + 1
-            containerFrame:SetAlpha(1)
-            containerFrame:EnableMouse(true)
-        end
-    end
-        
-    -- If no bags are open, open them
-    if numBagsOpen == 0 then
-        C_Timer.After(0.1, function()
-            if not merchantActive then     
-                return
-            end
-            
-            if originalToggleAllBags then
-                originalToggleAllBags()
-            elseif ToggleAllBags then
-                local tempBagsHidden = HideUI.State.bagsHidden
-                local tempMerchantActive = merchantActive
-                HideUI.State.bagsHidden = false
-                merchantActive = false
-                ToggleAllBags()
-                HideUI.State.bagsHidden = tempBagsHidden
-                merchantActive = tempMerchantActive
-            end
-        end)
-        
-        -- Ensure bags are visible after opening
-        C_Timer.After(0.3, function()
-            if not merchantActive then
-                return
-            end
-            
-            for i = 1, 13 do
-                local containerFrame = _G["ContainerFrame"..i]
-                if containerFrame and containerFrame:IsShown() then
-                    containerFrame:SetAlpha(1)
-                    containerFrame:EnableMouse(true)
-                end
-            end
-        end)
-    end
-    
-end
-
--- Hide bags when leaving merchant
-function HideUI.Bags.HideAfterMerchant()
-    if not merchantActive then 
-        return 
-    end
-
-    merchantActive = false
-    
-    -- If bags are supposed to be hidden, hide them instantly
-    if HideUI.State.bagsHidden then
-        HideUI.Bags.HideAfterDelay()
-    else
-    end
-end
-
--- Check if currently at merchant
-function HideUI.Bags.IsMerchantActive()
-    return merchantActive
 end

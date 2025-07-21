@@ -66,6 +66,10 @@ function HideUI.Combat.ApplyHiddenState()
     
     if state.barsHidden and HideUI.Core and HideUI.Config and HideUI.Config.actionBars then
         HideUI.Core.ToggleElementList(HideUI.Config.actionBars, true, "bars")
+        -- Gestion spéciale pour MainMenuBar
+        if HideUI.Core.ToggleMainMenuBar then
+            HideUI.Core.ToggleMainMenuBar(true)
+        end
     end
     
     if state.chatHidden and HideUI.Chat then

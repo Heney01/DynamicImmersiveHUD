@@ -36,9 +36,6 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
             local bar = _G[barName]
             if bar then
                 bar:SetAlpha(1)
-                if bar.EnableMouse then
-                    bar:EnableMouse(true)
-                end
             end
         end
         
@@ -53,9 +50,7 @@ function HideUI.Hover.ShowElementsOnHover(elementType)
             local element = _G[elementName]
             if element then
                 element:SetAlpha(1)
-                if element.EnableMouse then
-                    element:EnableMouse(true)
-                end
+                -- NE PAS toucher à EnableMouse
             end
         end
         

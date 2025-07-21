@@ -11,4 +11,13 @@
     <Binding name="HIDEUI_SHOW_ALL" category="ADDONS" runOnUp="true">
         HideUI_ShowAll()
     </Binding>
+    <Binding name="HIDEUI_TOGGLE_AUTOHIDE" category="ADDONS" runOnUp="true">
+        HideUI_ToggleAutoHide()
+    </Binding>
+    <Binding name="HIDEUI_TOGGLE_ADDON" category="ADDONS" runOnUp="true">
+        HideUI_ToggleAddon()
+    </Binding>
+    <Binding name="HIDEUI_SMART_TOGGLE" category="ADDONS" runOnUp="true">
+        HideUI_SmartToggle()
+    </Binding>
 </Bindings>

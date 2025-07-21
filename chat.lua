@@ -14,6 +14,11 @@ local chatTimer = nil
 
 -- Apply chat toggle
 function HideUI.Chat.ApplyToggle(isHidden)
+    -- Si l'addon est désactivé, ne rien faire
+    if HideUI.State and not HideUI.State.addonEnabled then
+        return
+    end
+    
     -- Cancel temporary chat if active
     if chatTemporaryActive then
         chatTemporaryActive = false
@@ -30,10 +35,8 @@ function HideUI.Chat.ApplyToggle(isHidden)
             if chatFrame then
                 if isHidden then
                     chatFrame:SetAlpha(0)
-                    chatFrame:EnableMouse(false)
                 else
                     chatFrame:SetAlpha(1)
-                    chatFrame:EnableMouse(true)
                 end
             end
             

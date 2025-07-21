@@ -65,7 +65,6 @@ HideUI.Config.chatElements = {
 -- HOVER CONFIGURATION 
 -- ============================================================================
 
--- Hover zones pour les éléments restants
 HideUI.Config.hoverZones = {
     chat = {
         region = {left = 0, right = 450, bottom = 0, top = 350},

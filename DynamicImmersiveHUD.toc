@@ -1,15 +1,77 @@
 ## Interface: 110002
 ## Title: Dynamic Immersive HUD
-## Notes: Dynamic and immersive interface - Smart hiding based on context
-## Author: YourName
-## Version: 2.0
-## SavedVariables: DynamicImmersiveHUDDB
+## Notes: Smart interface hiding with combat awareness, hover detection, and intelligent chat management for an immersive gameplay experience.
+## Notes-frFR: Interface immersive avec masquage intelligent, détection de combat et gestion automatique du chat pour une expérience de jeu immersive.
+## Notes-deDE: Intelligente Interface-Versteckung mit Kampfbewusstsein, Hover-Erkennung und intelligentem Chat-Management für ein immersives Spielerlebnis.
+## Notes-esES: Ocultación inteligente de interfaz con detección de combate, detección hover y gestión inteligente del chat para una experiencia de juego inmersiva.
+## Notes-ptBR: Ocultação inteligente de interface com consciência de combate, detecção de hover e gerenciamento inteligente de chat para uma experiência de jogo imersiva.
+## Notes-ruRU: Умное скрытие интерфейса с определением боя, обнаружением наведения и интеллектуальным управлением чатом для погружающего игрового опыта.
+## Notes-zhCN: 智能界面隐藏，具有战斗感知、悬停检测和智能聊天管理，提供沉浸式游戏体验。
+## Notes-zhTW: 智慧介面隱藏，具有戰鬥感知、懸停檢測和智慧聊天管理，提供沉浸式遊戲體驗。
+## Notes-koKR: 전투 인식, 호버 감지 및 지능형 채팅 관리를 통한 스마트 인터페이스 숨김으로 몰입형 게임 경험을 제공합니다.
+## Notes-itIT: Nascondere intelligente dell'interfaccia con rilevamento del combattimento, rilevamento hover e gestione intelligente della chat per un'esperienza di gioco immersiva.
 
-# Important loading order
+## Author: Judreu
+## Version: 2.0.1
+## X-Version: 2.0.1
+## X-Revision: 20250121
+## X-Build: Release
+
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## LoadWith: 
+## LoadManagers: AddonLoader
+
+## SavedVariables: DynamicImmersiveHUDDB
+## SavedVariablesPerCharacter: DynamicImmersiveHUDCharDB
+
+## X-Category: Interface Enhancements
+## X-Classification: Interface Enhancements
+## X-Website: https://www.curseforge.com/wow/addons/dynamic-immersive-hud
+## X-Curse-Project-ID: XXXXXX
+## X-Curse-Project-Name: Dynamic Immersive HUD
+## X-WoWI-ID: XXXXX
+## X-Wago-ID: XXXXXX
+
+## X-Email: judreu.entreprise@gmail.com
+## X-License: All Rights Reserved
+## X-Localizations: enUS, frFR, deDE, esES, ptBR, ruRU, zhCN, zhTW, koKR, itIT
+
+## X-Min-Interface: 110000
+## X-Max-Interface: 110002
+## X-Compatible-With: 110002
+
+## X-Embeds: 
+## X-Dependencies: 
+## X-Optional-Dependencies: 
+## X-Incompatible-With: 
+## X-Conflicts-With: 
+
+## X-Keywords: interface, ui, hiding, immersive, combat, hover, smart, screenshot, roleplay, chat, bars, clean
+## X-Feedback: https://www.curseforge.com/wow/addons/dynamic-immersive-hud
+## X-Bug-Reports: https://www.curseforge.com/wow/addons/dynamic-immersive-hud/issues
+## X-Feature-Requests: https://www.curseforge.com/wow/addons/dynamic-immersive-hud/issues
+
+## X-Date: 2025-01-21T10:00:00Z
+## X-Credits: Thanks to the WoW addon development community
+## X-Acknowledgements: Inspired by immersive gaming experiences
+
+## X-Help: Type /hideui for commands or press '<' to toggle interface
+## X-RelSite-UI: https://www.curseforge.com/wow/addons/dynamic-immersive-hud
+
+# Core configuration and initialization
 Config.lua
+
+# Main addon core and state management
 Core.lua
+
+# Specialized modules (order matters for dependencies)
 Chat.lua
 Combat.lua
 Hover.lua
+Targeting.lua
+Bags.lua
+
+# User interface and controls
 Commands.lua
 Keybinds.lua
